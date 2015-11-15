@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">reciper</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="test">Praise God!</string>
+    <string name="action_settings">Settings</string>
+</resources>

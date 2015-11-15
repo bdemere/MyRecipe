@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/fragment_image_cont">
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="VPager"
+        android:id="@+id/vpager_button"
+        android:layout_gravity="center_horizontal|bottom" />
+
+    <ImageView
+        android:id = "@+id/snap_image"
+        android:layout_width="384dp"
+        android:layout_height="384dp"
+        android:layout_gravity="right|center_vertical" />
+
+</LinearLayout>

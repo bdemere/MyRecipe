@@ -3,15 +3,12 @@ package com.bignerdranch.android.reciper;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -30,6 +27,11 @@ public class SnapFragment extends Fragment {
     public float x;
     public float y;
 
+    public Button mNewRecipe;
+    public Button mAllRecipes;
+    //private Bitmap background =
+      //      ((BitmapDrawable)getResources().getDrawable(R.drawable.kitchen2)).getBitmap();
+
     public static SnapFragment newInstance(int position) {
         Bundle args = new Bundle();
         args.putSerializable(SNAP_ID, position);
@@ -43,13 +45,15 @@ public class SnapFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         snapID = (int)getArguments().getSerializable(SNAP_ID);
-        //mCoord.setText("3");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_image, container, false);
-        Recipe.getThisRecipe().testImageSetter();
+        View v = inflater.inflate(R.layout.start_page, container, false);
+        //Bitmap background = BitmapFactory.decodeResource(getResources(), R.drawable.nice);
+        //v.setBackground(new BitmapDrawable(getActivity().getResources(), background));
+
+       /* Recipe.getThisRecipe().testImageSetter();
         mRecipe = Recipe.getThisRecipe().getSnaps();
         mSnapImage = (ImageView) v.findViewById(R.id.snap_image);
         mVP = (Button) v.findViewById(R.id.vpager_button);
@@ -75,7 +79,7 @@ public class SnapFragment extends Fragment {
                 }
                 return true;
             }
-        });
+        });*/
         return v;
     }
 }

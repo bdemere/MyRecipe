@@ -2,7 +2,7 @@ package com.bignerdranch.android.reciper;
 
 import android.support.v4.app.Fragment;
 
-public class snapActivity extends SingleFragmentActivity {
+public class SnapActivity extends SingleFragmentActivity {
 
     /*private static final String SNAP_ID =
             "com.bignerdranch.android.criminalintent.crime_id";*/
@@ -15,7 +15,7 @@ public class snapActivity extends SingleFragmentActivity {
 
     @Override
     protected Fragment createFragment() {
-        return SnapFragment.newInstance(1);
+        return StartPageFragment.newInstance(1);
     }
 
 }

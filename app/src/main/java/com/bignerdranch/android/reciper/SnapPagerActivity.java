@@ -43,7 +43,7 @@ public class SnapPagerActivity extends FragmentActivity {
             @Override
             public Fragment getItem(int position) {
                 //Snap snap = mRecipe.get(position);
-                return SnapFragment.newInstance(position);
+                return StartPageFragment.newInstance(position);
             }
 
             @Override

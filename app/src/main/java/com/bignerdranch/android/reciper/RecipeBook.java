@@ -2,6 +2,7 @@ package com.bignerdranch.android.reciper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by bubujay on 11/14/15.
@@ -32,6 +33,13 @@ public class RecipeBook {
         return theRecipeBook;
     }
 
+    public Recipe getRecipe(UUID ID){
+        for(Recipe recipe: theRecipes){
+            if(recipe.getID() == ID)
+                return recipe;
+        }
+        return null;
+    }
     public List<Recipe> getTheRecipes() {
         return theRecipes;
     }

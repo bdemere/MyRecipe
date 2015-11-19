@@ -12,17 +12,17 @@ import android.widget.Button;
 /**
  * Created by bubujay on 11/13/15.
  */
-public class StartPageFragment extends Fragment {
+public class HomePageFragment extends Fragment {
 
     final static String SNAP_ID = "com.genius.android.reciper";
     public Button mNewRecipe;
     public Button mAllRecipes;
 
-    public static StartPageFragment newInstance(int position) {
+    public static HomePageFragment newInstance(int position) {
         Bundle args = new Bundle();
         args.putSerializable(SNAP_ID, position);
 
-        StartPageFragment fragment = new StartPageFragment();
+        HomePageFragment fragment = new HomePageFragment();
         fragment.setArguments(args);
         return fragment;
     }

@@ -2,7 +2,6 @@ package com.bignerdranch.android.reciper;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -21,7 +20,7 @@ public class Recipe {
         mDate = new Date();
     }
 
-    public static Recipe getThisRecipe(){
+    public static Recipe getRecipe(){
         return thisRecipe;
     }
 
@@ -56,7 +55,7 @@ public class Recipe {
         this.ID = ID;
     }
 
-    public List<Snap> getSnaps() {
+    public ArrayList<Snap> getSnaps() {
         return mSnaps;
     }
 }

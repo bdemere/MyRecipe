@@ -10,20 +10,22 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * Created by bubujay on 11/14/15.
  */
 public class SnapPagerActivity extends FragmentActivity {
-    private static final String EXTRA_SNAP_ID =
+    private static final String EXTRA_RECIPE_ID =
             "com.genius.android.reciper.snap_id";
 
     private ViewPager mViewPager;
-    private ArrayList<Snap> mRecipe;
+    private UUID mRecipeID;
+    private ArrayList<Snap> mRecipeSnaps;
 
-    public static Intent newIntent(Context packageContext, int snapID){
+    public static Intent newIntent(Context packageContext, UUID recipeID){
         Intent intent = new Intent(packageContext, SnapPagerActivity.class);
-        intent.putExtra(EXTRA_SNAP_ID, snapID);
+        intent.putExtra(EXTRA_RECIPE_ID, recipeID);
         return intent;
     }
 
@@ -31,24 +33,24 @@ public class SnapPagerActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_snap_pager);
-
-        int whichSnap = (int)getIntent().getSerializableExtra(EXTRA_SNAP_ID);
-
         mViewPager = (ViewPager) findViewById(R.id.activity_snap_pager_view_pager);
 
-        mRecipe = (ArrayList)Recipe.getThisRecipe().getSnaps();
+        mRecipeID = (UUID)getIntent().getSerializableExtra(EXTRA_RECIPE_ID);
+
+        mRecipeSnaps = (ArrayList)RecipeBook.getTheRecipeBook().getRecipe(mRecipeID).getSnaps();
+
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         mViewPager.setAdapter(new FragmentPagerAdapter(fragmentManager) {
             @Override
             public Fragment getItem(int position) {
                 //Snap snap = mRecipe.get(position);
-                return StartPageFragment.newInstance(position);
+                return SnapFragment.newInstance(position, mRecipeID);
             }
 
             @Override
             public int getCount() {
-                return mRecipe.size();
+                return mRecipeSnaps.size();
             }
         });
     }

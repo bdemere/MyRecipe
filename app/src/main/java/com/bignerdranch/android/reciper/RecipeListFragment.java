@@ -1,5 +1,6 @@
 package com.bignerdranch.android.reciper;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -57,7 +58,13 @@ public class RecipeListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
+            Intent intent = SnapPagerActivity.newIntent(getActivity(), mRecipe.getID());
+            startActivity(intent);
             Log.d("Recipe List", "clicked a recipe " + mRecipe.getTitle());
+            /*Log.d("Recipe List", "clicked a recipe " + RecipeBook.
+                    getTheRecipeBook().
+                    getTheRecipes().
+                    indexOf(mRecipe));*/
         }
     }
 
@@ -79,6 +86,7 @@ public class RecipeListFragment extends Fragment {
         @Override
         public void onBindViewHolder(RecipeHolder holder, int position) {
             Recipe recipe = mRecipes.get(position);
+            Log.d("recycler", ""+position);
             holder.bindRecipe(recipe);
         }
 

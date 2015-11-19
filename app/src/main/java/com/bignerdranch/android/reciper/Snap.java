@@ -11,22 +11,17 @@ public class Snap {
     private int mPicture;
     private List<Comment> mComments;
 
-    public List<Comment> getmComments() {
+    public List<Comment> getComments() {
         return mComments;
     }
 
-    public void setmComments(List<Comment> mComments) {
+    public void setComments(List<Comment> mComments) {
         this.mComments = mComments;
     }
 
-    public int getmID() {
+    public int getID() {
         return mID;
     }
-
-    public void setmID(int mID) {
-        this.mID = mID;
-    }
-
     public int getPicture() {
         return mPicture;
     }

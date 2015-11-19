@@ -6,6 +6,7 @@ package com.bignerdranch.android.reciper;
 public class Comment {
     private int x;
     private int y;
+    private String Comment;
 
     public int getX() {
         return x;

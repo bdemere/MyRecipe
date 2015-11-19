@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".SnapActivity"
+            android:name=".HomePageActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,6 +18,8 @@
         <activity
             android:name=".RecipeListActivity"
             android:label = "Recipe List"></activity>
+        <activity android:name=".SnapPagerActivity"
+            android:label = "Snap SlideShow"></activity>
     </application>
 
 </manifest>

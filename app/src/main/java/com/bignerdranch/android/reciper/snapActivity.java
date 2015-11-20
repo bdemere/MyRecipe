@@ -15,7 +15,6 @@ public class snapActivity extends SingleFragmentActivity {
 
     @Override
     protected Fragment createFragment() {
-        return SnapFragment.newInstance(1);
+        return RecipeFragment.newInstance();
     }
-
 }

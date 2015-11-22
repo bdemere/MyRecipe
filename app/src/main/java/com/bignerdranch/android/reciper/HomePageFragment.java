@@ -15,8 +15,11 @@ import android.widget.Button;
 public class HomePageFragment extends Fragment {
 
     final static String SNAP_ID = "com.genius.android.reciper";
-    public Button mNewRecipe;
-    public Button mAllRecipes;
+    private Button mNewRecipe;
+    private Button mAllRecipes;
+
+    private RecipeBook mTheBook;
+
 
     public static HomePageFragment newInstance(int position) {
         Bundle args = new Bundle();
@@ -37,6 +40,21 @@ public class HomePageFragment extends Fragment {
         View v = inflater.inflate(R.layout.start_page, container, false);
         mNewRecipe = (Button)v.findViewById(R.id.new_recipe_button);
         mAllRecipes = (Button)v.findViewById(R.id.all_recipes_button);
+
+        mTheBook = RecipeBook.getTheRecipeBook();
+
+        mNewRecipe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*Intent intent = new Intent(getActivity(), NewRecipePageActivity.class);
+                startActivity(intent);*/
+                Recipe recipe = mTheBook.newRecipe("temp");
+                recipe.newSnap();
+                recipe.newSnap();
+                Intent intent = NewRecipeSnapPagerActivity.newIntent(getActivity(), recipe.getID());
+                startActivity(intent);
+            }
+        });
 
         mAllRecipes.setOnClickListener(new View.OnClickListener(){
             @Override

@@ -8,22 +8,20 @@ import java.util.UUID;
  * Created by bubujay on 11/14/15.
  */
 public class Recipe {
-    private static Recipe thisRecipe;
     private String mRecipeTitle;
     private Date mDate;
     private UUID ID;
+    private Snap mLatest;
     private ArrayList<Snap> mSnaps = new ArrayList<>();
 
     public Recipe(String title){
+        ID.randomUUID();
         mRecipeTitle = title;
+        Snap dummySnap = new Snap(ID);
+        mSnaps.add(dummySnap);
         testImageSetter();
         mDate = new Date();
     }
-
-    public static Recipe getRecipe(){
-        return thisRecipe;
-    }
-
 
     public Date getDate() {
         return mDate;
@@ -33,29 +31,33 @@ public class Recipe {
         return mRecipeTitle;
     }
 
-    public void setTitle(String mRecipeTitle) {
-        this.mRecipeTitle = mRecipeTitle;
-    }
     public void testImageSetter(){
-        Snap temp1 = new Snap();
-        Snap temp2 = new Snap();
-        Snap temp3 = new Snap();
+        Snap temp1 = new Snap(ID);
+        //Snap temp2 = new Snap(ID);
+        //Snap temp3 = new Snap(ID);
         temp1.setPicture(R.drawable.burger);
-        temp2.setPicture(R.drawable.bbq);
-        temp3.setPicture(R.drawable.download);
-        mSnaps.add(temp1);
-        mSnaps.add(temp2);
-        mSnaps.add(temp3);
+        //temp2.setPicture(R.drawable.bbq);
+        //temp3.setPicture(R.drawable.download);
+        mSnaps.add(mSnaps.size() - 1, temp1);
+        //mSnaps.add(temp2);
+        //mSnaps.add(temp3);
     }
     public UUID getID() {
         return ID;
     }
 
-    public void setID(UUID ID) {
-        this.ID = ID;
+    public Snap getLatest(){
+        return mLatest;
     }
-
     public ArrayList<Snap> getSnaps() {
         return mSnaps;
+    }
+
+    public Snap newSnap(){
+        Snap newSnap = new Snap(ID);
+        mSnaps.add((mSnaps.size() - 1),newSnap);
+        newSnap.setPicture(R.drawable.kitchen); // temporary
+        mLatest = newSnap;
+        return newSnap;
     }
 }

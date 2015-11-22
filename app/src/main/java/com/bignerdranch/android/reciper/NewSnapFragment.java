@@ -22,10 +22,12 @@ import java.util.UUID;
 /**
  * Created by bubujay on 11/13/15.
  */
-public class SnapFragment extends Fragment{
+public class NewSnapFragment extends Fragment{
 
     final static String SNAP_ID = "com.genius.android.reciper.SNAP_ID";
     final static String RECIPE_ID = "com.genius.android.reciper.RECIPE_ID";
+    final static String IS_CAMERA = "com.genius.android.reciper.IS_CAMERA";
+
     //private List<Snap> mRecipe;
     private Snap mCurrentSnap;
     private Button mVP;
@@ -44,17 +46,20 @@ public class SnapFragment extends Fragment{
     private Button mWrapUpButton;
     private int snapID;
     private UUID recipeID;
+    private boolean isCamera;
     public float x;
     public float y;
+    private Button mAddSnapButton;
 
     //private Bitmap background = ((BitmapDrawable)getResources().getDrawable(R.drawable.kitchen2)).getBitmap();
 
-    public static SnapFragment newInstance(int position, UUID recipeID) {
+    public static NewSnapFragment newInstance(int position, UUID recipeID, boolean isCamera) {
         Bundle args = new Bundle();
         args.putSerializable(SNAP_ID, position);
         args.putSerializable(RECIPE_ID, recipeID);
+        args.putSerializable(IS_CAMERA, isCamera);
 
-        SnapFragment fragment = new SnapFragment();
+        NewSnapFragment fragment = new NewSnapFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -64,42 +69,39 @@ public class SnapFragment extends Fragment{
         super.onCreate(savedInstanceState);
         snapID = (int)getArguments().getSerializable(SNAP_ID);
         recipeID = (UUID)getArguments().getSerializable(RECIPE_ID);
+        isCamera = (boolean)getArguments().getSerializable(IS_CAMERA);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.recipe_snap, container, false);
+        View v = inflater.inflate(R.layout.new_recipe_snap, container, false);
         mCurrentSnap = RecipeBook.getTheRecipeBook().getRecipe(recipeID).getSnaps().get(snapID);
 
         mSnapImage = (ImageView) v.findViewById(R.id.snap_imageView);
         mRetakeButton = (Button) v.findViewById(R.id.retake_button);
         mWrapUpButton = (Button) v.findViewById(R.id.wrapup_button);
+        mAddSnapButton = (Button) v.findViewById(R.id.add_snap_button);
         mSnapImage.setClickable(true);
 
         Bitmap background = BitmapFactory.decodeResource(getResources(), mCurrentSnap.getPicture());
         mSnapImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         mSnapImage.setImageBitmap(background);
 
-        //mButtonTemp = (Button) v.findViewById(R.id.button_temp);
+        if(isCamera) {
+            mSnapImage.setVisibility(View.INVISIBLE);
+            mRetakeButton.setVisibility(View.INVISIBLE);
+            mWrapUpButton.setVisibility(View.INVISIBLE);
+        }else{
+            mAddSnapButton.setVisibility(View.INVISIBLE);
+        }
 
-       /* Recipe.getThisRecipe().testImageSetter();
-        mRecipe = Recipe.getThisRecipe().getSnaps();
-        mSnapImage = (ImageView) v.findViewById(R.id.snap_image);
-        mVP = (Button) v.findViewById(R.id.vpager_button);
-        mSnapImage.setImageResource(mRecipe.get(snapID).getPicture());
-
-        mVP.setOnClickListener(new View.OnClickListener() {
+        mAddSnapButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View b) {
-                Log.d("fragment", "you touched at x: " + x + " y: " + y);
-                String toastString = "x : " + x + " y: " + y;
-                Toast.makeText(getActivity(), toastString, Toast.LENGTH_SHORT).show();
+            public void onClick(View v) {
+                RecipeBook.getTheRecipeBook().getLatest().newSnap();
+
             }
         });
-        */
-        //mSnapImage.animate().y(-1*(mRetakeButton.getHeight())).setDuration(400);
-
-        //mSnapImage.animate().y(isShifted * mRetakeButton.getHeight()).setDuration(1000);
         final CountDownTimer hideTimer = new CountDownTimer(2000,1000){
             @Override
             public void onTick(long millisUntilFinished) {

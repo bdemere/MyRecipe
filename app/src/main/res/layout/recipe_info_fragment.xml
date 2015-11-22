@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/recipe_info_dialog">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Recipe Name"
+        android:id="@+id/recipe_info_name_plain_text"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="162dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/new_recipe_name_textfield"
+        android:layout_below="@+id/recipe_info_name_plain_text"
+        android:layout_alignLeft="@+id/recipe_info_name_plain_text"
+        android:layout_alignStart="@+id/recipe_info_name_plain_text"
+        android:layout_alignRight="@+id/recipe_info_name_plain_text"
+        android:layout_alignEnd="@+id/recipe_info_name_plain_text" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Category"
+        android:id="@+id/recipe_info_category_plain_text"
+        android:layout_centerVertical="true"
+        android:layout_alignLeft="@+id/new_recipe_name_textfield"
+        android:layout_alignStart="@+id/new_recipe_name_textfield" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/new_recipe_category_textfield"
+        android:layout_below="@+id/recipe_info_category_plain_text"
+        android:layout_alignLeft="@+id/recipe_info_category_plain_text"
+        android:layout_alignStart="@+id/recipe_info_category_plain_text"
+        android:layout_alignRight="@+id/new_recipe_name_textfield"
+        android:layout_alignEnd="@+id/new_recipe_name_textfield" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:text="OK"
+        android:id="@+id/submit_recipeinfo_button"
+        android:layout_below="@+id/new_recipe_category_textfield"
+        android:layout_toRightOf="@+id/new_recipe_category_textfield" />
+</RelativeLayout>

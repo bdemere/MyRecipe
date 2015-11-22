@@ -9,14 +9,15 @@ import java.util.UUID;
  */
 public class RecipeBook {
     private static RecipeBook theRecipeBook;
+    private static int mLatestRecipe = -1;
 
     private ArrayList<Recipe> theRecipes = new ArrayList<>();
 
-    public RecipeBook(){
+    private RecipeBook(){
         testRecipeSetter();
-        testRecipeSetter();
-        testRecipeSetter();
-        testRecipeSetter();
+        //testRecipeSetter();
+        //testRecipeSetter();
+        //testRecipeSetter();
     }
     public void testRecipeSetter(){
         Recipe recipe1 = new Recipe("Burger1");
@@ -40,7 +41,18 @@ public class RecipeBook {
         }
         return null;
     }
+    public Recipe getLatest(){
+        if(mLatestRecipe == -1)
+            return null;
+        return theRecipes.get(mLatestRecipe);
+    }
     public List<Recipe> getTheRecipes() {
         return theRecipes;
+    }
+    public Recipe newRecipe(String name){
+        Recipe newRecipe = new Recipe(name);
+        theRecipes.add(newRecipe);
+        mLatestRecipe++;
+        return newRecipe;
     }
 }

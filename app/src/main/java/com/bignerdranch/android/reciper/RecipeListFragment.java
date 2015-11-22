@@ -101,7 +101,7 @@ public class RecipeListFragment extends Fragment {
     }
 
     private void updateUI(){
-        RecipeBook book = new RecipeBook();
+        RecipeBook book = RecipeBook.getTheRecipeBook();
         List<Recipe> recipes = book.getTheRecipes();
         mAdapter = new RecipeAdapter(recipes);
         mRecipeRecyclerView.setAdapter(mAdapter);

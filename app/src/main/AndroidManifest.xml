@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.bignerdranch.android.reciper" >
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18"
+        />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,11 +19,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".RecipeListActivity"
             android:label = "Recipe List"></activity>
+
         <activity android:name=".SnapPagerActivity"
             android:label = "Snap SlideShow"></activity>
+
+        <activity android:name=".NewRecipePageActivity"
+            android:label = "New Recipe Page"></activity>
+
+        <activity android:name=".NewRecipeSnapPagerActivity"
+            android:label = "New Recipe Snaps"></activity>
     </application>
 
 </manifest>

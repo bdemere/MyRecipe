@@ -33,14 +33,14 @@ public class Recipe {
 
     public void testImageSetter(){
         Snap temp1 = new Snap(ID);
-        //Snap temp2 = new Snap(ID);
-        //Snap temp3 = new Snap(ID);
+        Snap temp2 = new Snap(ID);
+        Snap temp3 = new Snap(ID);
         temp1.setPicture(R.drawable.burger);
-        //temp2.setPicture(R.drawable.bbq);
-        //temp3.setPicture(R.drawable.download);
+        temp2.setPicture(R.drawable.bbq);
+        temp3.setPicture(R.drawable.download);
         mSnaps.add(mSnaps.size() - 1, temp1);
-        //mSnaps.add(temp2);
-        //mSnaps.add(temp3);
+        mSnaps.add(mSnaps.size() - 1, temp2);
+        mSnaps.add(mSnaps.size() - 1, temp3);
     }
     public UUID getID() {
         return ID;
@@ -56,7 +56,7 @@ public class Recipe {
     public Snap newSnap(){
         Snap newSnap = new Snap(ID);
         mSnaps.add((mSnaps.size() - 1),newSnap);
-        newSnap.setPicture(R.drawable.kitchen); // temporary
+        newSnap.setPicture(R.drawable.burger); // temporary
         mLatest = newSnap;
         return newSnap;
     }

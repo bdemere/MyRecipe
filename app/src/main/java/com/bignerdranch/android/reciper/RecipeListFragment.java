@@ -58,13 +58,10 @@ public class RecipeListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Intent intent = SnapPagerActivity.newIntent(getActivity(), mRecipe.getID());
+            //Intent intent = SnapPagerActivity.newIntent(getActivity(), mRecipe.getID());
+            Intent intent = DetailRecipeActivity.newIntent(getActivity(), mRecipe.getID());
             startActivity(intent);
             Log.d("Recipe List", "clicked a recipe " + mRecipe.getTitle());
-            /*Log.d("Recipe List", "clicked a recipe " + RecipeBook.
-                    getTheRecipeBook().
-                    getTheRecipes().
-                    indexOf(mRecipe));*/
         }
     }
 

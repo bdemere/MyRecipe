@@ -99,10 +99,11 @@ public class NewSnapFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 RecipeBook.getTheRecipeBook().getLatest().newSnap();
+                NewRecipeSnapPagerActivity.update();
 
             }
         });
-        final CountDownTimer hideTimer = new CountDownTimer(2000,1000){
+        final CountDownTimer hideTimer = new CountDownTimer(1700,1000){
             @Override
             public void onTick(long millisUntilFinished) {
             }

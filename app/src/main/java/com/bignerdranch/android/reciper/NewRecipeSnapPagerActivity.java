@@ -20,7 +20,7 @@ public class NewRecipeSnapPagerActivity extends FragmentActivity {
     private static final String EXTRA_RECIPE_ID =
             "com.genius.android.reciper.snap_id";
 
-    private ViewPager mViewPager;
+    private static ViewPager mViewPager;
     private UUID mRecipeID;
     private ArrayList<Snap> mRecipeSnaps;
 
@@ -46,7 +46,7 @@ public class NewRecipeSnapPagerActivity extends FragmentActivity {
             @Override
             public Fragment getItem(int position) {
                 //Snap snap = mRecipe.get(position);
-                boolean isCamera = false;
+                boolean isCamera = true;
                 Log.d("I'm here", "" + position);
                 Log.d("I'm Here", "" + mRecipeSnaps.size());
                 if(position == mRecipeSnaps.size() - 1)
@@ -56,14 +56,7 @@ public class NewRecipeSnapPagerActivity extends FragmentActivity {
 
             @Override
             public int getItemPosition(Object item) {
-                NewSnapFragment fragment = (NewSnapFragment)item;
-                int position = mRecipeSnaps.indexOf(RecipeBook.getTheRecipeBook().getRecipe(mRecipeID).getLatest());
-
-                if (position >= 0) {
-                    return position;
-                } else {
-                    return POSITION_NONE;
-                }
+                return POSITION_NONE;
             }
 
             @Override
@@ -73,7 +66,7 @@ public class NewRecipeSnapPagerActivity extends FragmentActivity {
         });
     }
 
-    public void update(){
+    public static void update(){
         mViewPager.getAdapter().notifyDataSetChanged();
     }
 

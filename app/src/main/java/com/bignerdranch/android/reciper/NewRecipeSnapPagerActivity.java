@@ -46,7 +46,7 @@ public class NewRecipeSnapPagerActivity extends FragmentActivity {
             @Override
             public Fragment getItem(int position) {
                 //Snap snap = mRecipe.get(position);
-                boolean isCamera = true;
+                boolean isCamera = false;
                 Log.d("I'm here", "" + position);
                 Log.d("I'm Here", "" + mRecipeSnaps.size());
                 if(position == mRecipeSnaps.size() - 1)

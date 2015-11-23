@@ -13,7 +13,7 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.blank);
         UUID a = new UUID(234,342);
-        Intent i = SnapPagerActivity.newIntent(MainActivity.this, a);
+        Intent i = SnapPagerActivity.newIntent(MainActivity.this, a,2);
         startActivity(i);
     }
 }

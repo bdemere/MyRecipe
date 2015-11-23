@@ -18,14 +18,18 @@ import java.util.UUID;
 public class SnapPagerActivity extends FragmentActivity {
     private static final String EXTRA_RECIPE_ID =
             "com.genius.android.reciper.snap_id";
+    private static final String EXTRA_START_POSITION =
+            "com.genius.android.reciper.SnapPager.snap_id";
 
     private ViewPager mViewPager;
     private UUID mRecipeID;
+    private int mStartPos;
     private ArrayList<Snap> mRecipeSnaps;
 
-    public static Intent newIntent(Context packageContext, UUID recipeID){
+    public static Intent newIntent(Context packageContext, UUID recipeID, int startPosition){
         Intent intent = new Intent(packageContext, SnapPagerActivity.class);
         intent.putExtra(EXTRA_RECIPE_ID, recipeID);
+        intent.putExtra(EXTRA_START_POSITION, startPosition);
         return intent;
     }
 
@@ -36,6 +40,7 @@ public class SnapPagerActivity extends FragmentActivity {
         mViewPager = (ViewPager) findViewById(R.id.activity_snap_pager_view_pager);
 
         mRecipeID = (UUID)getIntent().getSerializableExtra(EXTRA_RECIPE_ID);
+        mStartPos = (int)getIntent().getSerializableExtra(EXTRA_START_POSITION);
 
         mRecipeSnaps = (ArrayList)RecipeBook.getTheRecipeBook().getRecipe(mRecipeID).getSnaps();
 
@@ -53,6 +58,7 @@ public class SnapPagerActivity extends FragmentActivity {
                 return mRecipeSnaps.size() - 1;
             }
         });
+        mViewPager.setCurrentItem(mStartPos);
     }
 
 }

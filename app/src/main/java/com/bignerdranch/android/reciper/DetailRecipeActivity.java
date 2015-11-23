@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import java.util.UUID;
 
@@ -23,13 +24,9 @@ public class DetailRecipeActivity extends SingleFragmentActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        RecipeID = (UUID)getIntent().getSerializableExtra(EXTRA_RECIPE_ID);
-    }
-
-    @Override
     protected Fragment createFragment() {
+        Log.d("TAG", "created fragment");
+        RecipeID = (UUID)getIntent().getSerializableExtra(EXTRA_RECIPE_ID);
         return DetailRecipeFragment.newInstance(RecipeID);
     }
 }

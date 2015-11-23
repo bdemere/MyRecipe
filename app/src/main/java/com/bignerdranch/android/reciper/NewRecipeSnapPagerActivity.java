@@ -21,8 +21,9 @@ public class NewRecipeSnapPagerActivity extends FragmentActivity {
             "com.genius.android.reciper.snap_id";
 
     private static ViewPager mViewPager;
-    private UUID mRecipeID;
-    private ArrayList<Snap> mRecipeSnaps;
+    private static UUID mRecipeID;
+    private static Recipe mRecipe;
+    private static ArrayList<Snap> mRecipeSnaps;
 
     public static Intent newIntent(Context packageContext, UUID recipeID){
         Intent intent = new Intent(packageContext, NewRecipeSnapPagerActivity.class);
@@ -36,9 +37,16 @@ public class NewRecipeSnapPagerActivity extends FragmentActivity {
         setContentView(R.layout.activity_snap_pager);
         mViewPager = (ViewPager) findViewById(R.id.activity_snap_pager_view_pager);
 
-        mRecipeID = (UUID)getIntent().getSerializableExtra(EXTRA_RECIPE_ID);
 
-        mRecipeSnaps = (ArrayList)RecipeBook.getTheRecipeBook().getRecipe(mRecipeID).getSnaps();
+        mRecipeID = (UUID) getIntent().getSerializableExtra(EXTRA_RECIPE_ID);
+        Log.d("TAG  " , "Sizzzzzzzzzzzzze:: "+ RecipeBook.getTheRecipeBook(getBaseContext()).getTheRecipes().size());
+        Log.d("TAG  " , "ID recived:: "+ mRecipeID);
+
+        mRecipe = RecipeBook.getTheRecipeBook(this).getRecipe(mRecipeID);
+
+        mRecipeSnaps = mRecipe.getSnaps();
+
+
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 

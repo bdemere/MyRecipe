@@ -1,5 +1,6 @@
 package com.bignerdranch.android.reciper;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -8,11 +9,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -22,6 +25,8 @@ import java.util.UUID;
 public class DetailRecipeFragment extends Fragment {
     private static final String RECIPE_ID = "com.genius.android.reciper.RECIPE_ID";
     private PhotoAdapter mAdapter;
+    private Recipe mRecipe;
+    private ArrayList<Snap> mSnaps;
     private UUID mRecipeID;
     private RecyclerView mPhotoRecyclerView;
 
@@ -37,6 +42,8 @@ public class DetailRecipeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mRecipeID = (UUID)getArguments().getSerializable(RECIPE_ID);
+        mRecipe = RecipeBook.getTheRecipeBook(getActivity()).getRecipe(mRecipeID);
+        mSnaps = mRecipe.getSnaps();
     }
 
     @Override
@@ -70,10 +77,17 @@ public class DetailRecipeFragment extends Fragment {
             mItemImageView = (ImageView) itemView.findViewById(R.id.text);
         }
 
-        public void bindDrawable(int Picture, final int Position) {
-            Bitmap placeholder = BitmapFactory.decodeResource(getResources(),Picture);
-            mItemImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            mItemImageView.setImageBitmap(placeholder);
+        public void bindDrawable(final int Position) {
+            File mPhotoFile = RecipeBook.getTheRecipeBook(getActivity()).getPhotoFile(mSnaps.get(Position));
+            if (mPhotoFile == null || !mPhotoFile.exists()) {
+                mItemImageView.setImageDrawable(null);
+            } else {
+                Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
+                mItemImageView.setImageBitmap(bitmap);
+            }
+
+            //mItemImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            //mItemImageView.setImageBitmap(placeholder);
 
             mItemImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -86,11 +100,12 @@ public class DetailRecipeFragment extends Fragment {
     }
 
     private class PhotoAdapter extends RecyclerView.Adapter<PhotoHolder> {
-        ArrayList<Snap> mSnaps;
+        private ArrayList<Snap> snaps;
 
-        public PhotoAdapter(ArrayList<Snap> snaps){
-            mSnaps = snaps;
+        public PhotoAdapter(ArrayList<Snap> snaps) {
+            this.snaps = snaps;
         }
+
         @Override
         public PhotoHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
@@ -101,20 +116,17 @@ public class DetailRecipeFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(PhotoHolder photoHolder, int position) {
-            int R = mSnaps.get(position).getPicture();
-            photoHolder.bindDrawable(R, position);
+            photoHolder.bindDrawable(position);
         }
 
         @Override
         public int getItemCount() {
-            return mSnaps.size();
+            return snaps.size();
         }
     }
 
     private void updateUI(){
-        RecipeBook book = RecipeBook.getTheRecipeBook();
-        ArrayList<Snap> snaps = book.getRecipe(mRecipeID).getSnaps();
-        mAdapter = new PhotoAdapter(snaps);
+        mAdapter = new PhotoAdapter(mSnaps);
         mPhotoRecyclerView.setAdapter(mAdapter);
     }
 }

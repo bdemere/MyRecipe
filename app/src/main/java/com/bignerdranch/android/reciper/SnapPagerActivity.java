@@ -42,7 +42,7 @@ public class SnapPagerActivity extends FragmentActivity {
         mRecipeID = (UUID)getIntent().getSerializableExtra(EXTRA_RECIPE_ID);
         mStartPos = (int)getIntent().getSerializableExtra(EXTRA_START_POSITION);
 
-        mRecipeSnaps = (ArrayList)RecipeBook.getTheRecipeBook().getRecipe(mRecipeID).getSnaps();
+        mRecipeSnaps = (ArrayList)RecipeBook.getTheRecipeBook(this).getRecipe(mRecipeID).getSnaps();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 

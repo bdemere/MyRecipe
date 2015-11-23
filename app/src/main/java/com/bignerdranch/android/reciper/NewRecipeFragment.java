@@ -35,7 +35,7 @@ public class NewRecipeFragment extends Fragment {
         View v = inflater.inflate(R.layout.new_recipe_page, container, false);
         mNewPhoto = (Button)v.findViewById(R.id.new_recipe_camera_button);
 
-        mTheBook = RecipeBook.getTheRecipeBook();
+        mTheBook = RecipeBook.getTheRecipeBook(getActivity());
         mNewPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

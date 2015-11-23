@@ -15,11 +15,11 @@ public class Recipe {
     private ArrayList<Snap> mSnaps = new ArrayList<>();
 
     public Recipe(String title){
-        ID.randomUUID();
+        ID = UUID.randomUUID();
         mRecipeTitle = title;
         Snap dummySnap = new Snap(ID);
         mSnaps.add(dummySnap);
-        testImageSetter();
+        //testImageSetter();
         mDate = new Date();
     }
 

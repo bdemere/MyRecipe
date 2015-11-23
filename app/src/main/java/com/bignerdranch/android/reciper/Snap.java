@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class Snap {
     private Context mContext;
-    private int mID;
+    private UUID mID;
     private int mPicture;
     private UUID mParentRecipeID;
     private File mPhotoFile;
@@ -25,12 +25,13 @@ public class Snap {
         return mComments;
     }
     public Snap(UUID RecipeID){
+        mID = UUID.randomUUID();
         mParentRecipeID = RecipeID;
         mComments = new ArrayList<Comment>();
         //CreateFile();
     }
 
-    public int getID() {
+    public UUID getID() {
         return mID;
     }
     public int getPicture() {
@@ -40,19 +41,10 @@ public class Snap {
     public String getPictureFileName(){
         String toReturn = "IMG_"
                 + mParentRecipeID.toString()
-                + " " + mID + ".jpg";
+                + "_" + mID + ".jpg";
         return toReturn;
     }
 
-    private File CreateFile(){
-        File externalFilesDir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-
-        if(externalFilesDir == null) {
-            return null;
-        }
-        mPhotoFile =  new File(externalFilesDir, getPictureFileName());
-        return mPhotoFile;
-    }
 
     public File getPhotoFile() {
         return mPhotoFile;

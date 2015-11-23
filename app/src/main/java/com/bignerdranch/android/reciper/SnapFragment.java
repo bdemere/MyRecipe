@@ -69,7 +69,7 @@ public class SnapFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.recipe_snap, container, false);
-        mCurrentSnap = RecipeBook.getTheRecipeBook().getRecipe(recipeID).getSnaps().get(snapID);
+        mCurrentSnap = RecipeBook.getTheRecipeBook(getActivity()).getRecipe(recipeID).getSnaps().get(snapID);
 
         mSnapImage = (ImageView) v.findViewById(R.id.snap_imageView);
         mRetakeButton = (Button) v.findViewById(R.id.retake_button);

@@ -69,6 +69,7 @@ public class NewSnapFragment extends Fragment{
     private ImageButton mCameraButton;
     private Camera mCamera = null;
     private CameraView mCameraView = null;
+    private File pictureFile;
 
 
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
@@ -76,9 +77,10 @@ public class NewSnapFragment extends Fragment{
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
 
-            File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+            //pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+            pictureFile = new File(getContext().getFilesDir(), "someimagename.bmp");
             if (pictureFile == null){
-                //Log.d("YO", "Error creating media file, check storage permissions: " + e.getMessage());
+                Log.d("YO", "Error creating media file, check storage permissions");
                 return;
             }
 
@@ -86,6 +88,8 @@ public class NewSnapFragment extends Fragment{
                 FileOutputStream fos = new FileOutputStream(pictureFile);
                 fos.write(data);
                 fos.close();
+                Bitmap bit = BitmapFactory.decodeFile(pictureFile.getPath());
+                Log.d("YO", "Bitmap file: " +bit);
             } catch (FileNotFoundException e) {
                 Log.d("YO", "File not found: " + e.getMessage());
             } catch (IOException e) {
@@ -140,23 +144,27 @@ public class NewSnapFragment extends Fragment{
             mCloseButton.setVisibility(View.VISIBLE);
             mCameraButton.setVisibility(View.VISIBLE);
 
-            mCameraButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mCamera.takePicture(null, null, mPicture);
-                }
-            });
-
             try{
                 mCamera = Camera.open();//you can use open(int) to use different cameras
             } catch (Exception e){
                 Log.d("ERROR", "Failed to get camera: " + e.getMessage());
             }
 
+            mCameraButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mCamera.takePicture(null, null, mPicture);
+                    //Bitmap bit = BitmapFactory.decodeFile(pictureFile.getPath());
+                    RecipeBook.getTheRecipeBook().getLatest().newSnap();
+                    NewRecipeSnapPagerActivity.update();
+                }
+            });
+
+
             if(mCameraButton != null) {
-                mCameraView = new CameraView(getActivity(), mCamera);//create a SurfaceView to show camera data
-                FrameLayout camera_view = (FrameLayout) v.findViewById(R.id.camera_view);
-                camera_view.addView(mCameraView);//add the SurfaceView to the layout
+                mCameraView = new CameraView(getActivity(), mCamera);
+                FrameLayout frameCamera = (FrameLayout) v.findViewById(R.id.camera_view);
+                frameCamera.addView(mCameraView);
             }
 
             //btn to close the application

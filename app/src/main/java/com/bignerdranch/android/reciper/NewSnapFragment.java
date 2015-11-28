@@ -1,13 +1,16 @@
 package com.bignerdranch.android.reciper;
 
-
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
+import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -63,13 +66,16 @@ public class NewSnapFragment extends Fragment{
     public float x;
     public float y;
     private Button mAddSnapButton;
+    private Vibrator mVibrate;
 
     /***camera page ***/
     private ImageButton mCloseButton;
     private ImageButton mCameraButton;
-    private Camera mCamera = null;
+    private Camera mCamera;
     private CameraView mCameraView = null;
     private File pictureFile;
+    private Bitmap mBackground;
+    private Canvas myCanvas = new Canvas();
 
 
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
@@ -133,9 +139,9 @@ public class NewSnapFragment extends Fragment{
 
         mSnapImage.setClickable(true);
 
-        Bitmap background = BitmapFactory.decodeResource(getResources(), mCurrentSnap.getPicture());
+        mBackground = BitmapFactory.decodeResource(getResources(), mCurrentSnap.getPicture());
         mSnapImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        mSnapImage.setImageBitmap(background);
+        mSnapImage.setImageBitmap(mBackground);
 
         if(isCamera) {
             mSnapImage.setVisibility(View.INVISIBLE);
@@ -143,12 +149,12 @@ public class NewSnapFragment extends Fragment{
             mWrapUpButton.setVisibility(View.INVISIBLE);
             mCloseButton.setVisibility(View.VISIBLE);
             mCameraButton.setVisibility(View.VISIBLE);
-
-            try{
+            mCamera = Camera.open(0);
+            /*try{
                 mCamera = Camera.open();//you can use open(int) to use different cameras
             } catch (Exception e){
                 Log.d("ERROR", "Failed to get camera: " + e.getMessage());
-            }
+            }*/
 
             mCameraButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -241,17 +247,56 @@ public class NewSnapFragment extends Fragment{
         mSnapImage.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                mVibrate = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                mVibrate.vibrate(25);
                 String toastString = "x : " + x + " y: " + y;
                 Toast.makeText(getActivity(), toastString, Toast.LENGTH_SHORT).show();
                 Log.d("fragment", "you long-touched at x: " + x + " y: " + y);
                 CommentDialog dialog = CommentDialog.newInstance(x, y);
                 dialog.show(getFragmentManager(), "comment at xy");
+                Bitmap tick = BitmapFactory.decodeResource(getResources(), R.drawable.comment);
+                mSnapImage.setImageBitmap(overlayBitmapToCenter(mBackground, getResizedBitmap(tick, 100,100),x,y));
                 return false;
             }
         });
         return v;
     }
 
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
+    }
+
+    public Bitmap overlayBitmapToCenter(Bitmap Background, Bitmap bitmap2, float mx, float my) {
+        Bitmap bitmap1 = Background.copy(Bitmap.Config.ARGB_8888, true);
+        int bitmap1Width = bitmap1.getWidth();
+        int bitmap1Height = bitmap1.getHeight();
+        int bitmap2Width = bitmap2.getWidth();
+        int bitmap2Height = bitmap2.getHeight();
+
+        float marginLeft = (float)(bitmap1Width * 0.5 - bitmap2Width * 0.5);
+        float marginTop =  (float)(bitmap1Height * 0.5 - bitmap2Height * 0.5);
+
+
+        Bitmap overlayBitmap = Bitmap.createBitmap(bitmap1Width, bitmap1Height, bitmap1.getConfig());
+        Canvas canvas = new Canvas(overlayBitmap);
+        canvas.drawBitmap(bitmap1, new Matrix(), null);
+        canvas.drawBitmap(bitmap2, marginLeft, marginTop, null);
+        mBackground = overlayBitmap;
+        return overlayBitmap;
+    }
 
     public float dpToPx(int dp) {
         DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();

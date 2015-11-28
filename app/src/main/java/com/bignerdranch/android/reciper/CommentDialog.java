@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.EditText;
 
 /**
@@ -42,6 +41,13 @@ public class CommentDialog extends DialogFragment {
 
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        Window window = getDialog().getWindow();
+        window.setLayout(1000,600);
+        window.setGravity(Gravity.CENTER);
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -52,13 +58,12 @@ public class CommentDialog extends DialogFragment {
         mComment = (EditText) view.findViewById(R.id.xy_comment);
         Window window = getDialog().getWindow();
         // set "origin" to top left corner
-        getDialog().setTitle("Comment");
-        window.setGravity(Gravity.TOP | Gravity.LEFT);
-
-        WindowManager.LayoutParams params = window.getAttributes();
+        //getDialog().setTitle("Comment");
+        //window.setGravity(Gravity.TOP | Gravity.LEFT);
+        /*WindowManager.LayoutParams params = window.getAttributes();
         params.x = Math.round(mX);
         params.y = Math.round(mY);
-        window.setAttributes(params);
+        window.setAttributes(params);*/
 
         return view;
     }

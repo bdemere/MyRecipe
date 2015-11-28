@@ -17,6 +17,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bignerdranch.android.reciper.data.Snap;
+
+import java.io.File;
 import java.util.UUID;
 
 /**
@@ -77,8 +80,12 @@ public class SnapFragment extends Fragment{
         mSnapImage.setClickable(true);
 
         Bitmap background = BitmapFactory.decodeResource(getResources(), mCurrentSnap.getPicture());
+
+        File mPhotoFile = RecipeBook.getTheRecipeBook(getActivity()).getPhotoFile(mCurrentSnap);
+        Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
+
         mSnapImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        mSnapImage.setImageBitmap(background);
+        mSnapImage.setImageBitmap(bitmap);
 
         //mButtonTemp = (Button) v.findViewById(R.id.button_temp);
 

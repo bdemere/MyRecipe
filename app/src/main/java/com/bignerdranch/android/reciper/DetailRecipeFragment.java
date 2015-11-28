@@ -1,19 +1,19 @@
 package com.bignerdranch.android.reciper;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import com.bignerdranch.android.reciper.data.Recipe;
+import com.bignerdranch.android.reciper.data.Snap;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -78,7 +78,7 @@ public class DetailRecipeFragment extends Fragment {
         }
 
         public void bindDrawable(final int Position) {
-            File mPhotoFile = RecipeBook.getTheRecipeBook(getActivity()).getPhotoFile(mSnaps.get(Position));
+            File mPhotoFile = RecipeBook.getTheRecipeBook(getActivity()).getPhotoFile(mSnaps.get(mSnaps.size() - 1 - Position));
             if (mPhotoFile == null || !mPhotoFile.exists()) {
                 mItemImageView.setImageDrawable(null);
             } else {

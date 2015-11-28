@@ -1,4 +1,6 @@
-package com.bignerdranch.android.reciper;
+package com.bignerdranch.android.reciper.data;
+
+import com.bignerdranch.android.reciper.R;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,9 +55,13 @@ public class Recipe {
         return mSnaps;
     }
 
+    public Snap getSnap(int position) {
+        return mSnaps.get(position);
+    }
+
     public Snap newSnap(){
         Snap newSnap = new Snap(ID);
-        mSnaps.add((mSnaps.size() - 1),newSnap);
+        mSnaps.add(0,newSnap);
         newSnap.setPicture(R.drawable.burger); // temporary
         mLatest = newSnap;
         return newSnap;

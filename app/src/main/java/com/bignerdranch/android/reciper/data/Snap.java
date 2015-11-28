@@ -1,7 +1,8 @@
-package com.bignerdranch.android.reciper;
+package com.bignerdranch.android.reciper.data;
 
 import android.content.Context;
-import android.os.Environment;
+
+import com.bignerdranch.android.reciper.data.Comment;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -40,8 +41,8 @@ public class Snap {
 
     public String getPictureFileName(){
         String toReturn = "IMG_"
-                + mParentRecipeID.toString()
-                + "_" + mID + ".jpg";
+                + mID.toString()
+                + "_" + mParentRecipeID.toString() + ".jpg";
         return toReturn;
     }
 

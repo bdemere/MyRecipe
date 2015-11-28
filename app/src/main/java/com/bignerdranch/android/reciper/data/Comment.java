@@ -1,4 +1,4 @@
-package com.bignerdranch.android.reciper;
+package com.bignerdranch.android.reciper.data;
 
 /**
  * Created by bubujay on 11/12/15.

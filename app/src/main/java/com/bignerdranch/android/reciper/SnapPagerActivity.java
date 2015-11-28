@@ -9,6 +9,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
+import com.bignerdranch.android.reciper.data.Snap;
+
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -50,7 +52,7 @@ public class SnapPagerActivity extends FragmentActivity {
             @Override
             public Fragment getItem(int position) {
                 //Snap snap = mRecipe.get(position);
-                return SnapFragment.newInstance(position, mRecipeID);
+                return SnapFragment.newInstance(mRecipeSnaps.size() - 1 - position, mRecipeID);
             }
 
             @Override

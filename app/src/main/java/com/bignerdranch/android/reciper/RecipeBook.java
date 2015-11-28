@@ -2,7 +2,9 @@ package com.bignerdranch.android.reciper;
 
 import android.content.Context;
 import android.os.Environment;
-import android.util.Log;
+
+import com.bignerdranch.android.reciper.data.Recipe;
+import com.bignerdranch.android.reciper.data.Snap;
 
 import java.io.File;
 import java.util.ArrayList;

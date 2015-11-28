@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bignerdranch.android.reciper.data.Recipe;
+
 import java.util.List;
 
 /**

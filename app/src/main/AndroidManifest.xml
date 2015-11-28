@@ -41,6 +41,7 @@
             android:label = "New Recipe Snaps"></activity>
 
         <activity android:name=".DetailRecipeActivity"
+            android:parentActivityName=".RecipeListActivity">
             android:label = "Recipe Detail"></activity>
         
 

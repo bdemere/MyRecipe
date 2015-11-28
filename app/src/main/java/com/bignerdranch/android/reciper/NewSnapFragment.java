@@ -4,13 +4,11 @@ package com.bignerdranch.android.reciper;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
@@ -20,13 +18,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bignerdranch.android.reciper.data.Recipe;
+import com.bignerdranch.android.reciper.data.Snap;
+
 import java.io.File;
-import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -58,6 +57,7 @@ public class NewSnapFragment extends Fragment{
     private Button mWrapUpButton;
     private int snapID;
     private UUID recipeID;
+    private Recipe mRecipe;
     private boolean isCamera;
     public float x;
     public float y;
@@ -84,8 +84,13 @@ public class NewSnapFragment extends Fragment{
         snapID = (int)getArguments().getSerializable(SNAP_ID);
         recipeID = (UUID)getArguments().getSerializable(RECIPE_ID);
         isCamera = (boolean)getArguments().getSerializable(IS_CAMERA);
-        mCurrentSnap = RecipeBook.getTheRecipeBook(getActivity()).getRecipe(recipeID).getSnaps().get(snapID);
+        mRecipe = RecipeBook.getTheRecipeBook(getActivity()).getRecipe(recipeID);
+        mCurrentSnap = mRecipe.getSnap(snapID);
         mPhotoFile = RecipeBook.getTheRecipeBook(getActivity()).getPhotoFile(mCurrentSnap);
+
+        Log.d("TAG", "mPhotoFile set to snap with id: " + mCurrentSnap.getID());
+        Log.d("TAG", "File name is: " + mCurrentSnap.getPictureFileName());
+        Log.d("TAG", "onCreate called!");
     }
 
     @Override
@@ -99,9 +104,20 @@ public class NewSnapFragment extends Fragment{
         mAddSnapButton = (Button) v.findViewById(R.id.add_snap_button);
         mSnapImage.setClickable(true);
 
+        Log.d("TAG", "snap being  created with id: " + mCurrentSnap.getID() + " in recipe with ID: " + recipeID + " and isCamera: " + isCamera);
+        Bitmap bitmap = null;
+        if(!isCamera) {
+            bitmap = PictureUtils.getScaledBitmap(
+                    RecipeBook.getTheRecipeBook(getActivity())
+                            .getPhotoFile(mCurrentSnap).getPath(), getActivity());
+        }
+
         Bitmap background = BitmapFactory.decodeResource(getResources(), mCurrentSnap.getPicture());
         mSnapImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        mSnapImage.setImageBitmap(background);
+
+        if(!isCamera) {
+            mSnapImage.setImageBitmap(bitmap);
+        }
 
         if(isCamera) {
             mSnapImage.setVisibility(View.INVISIBLE);
@@ -146,6 +162,8 @@ public class NewSnapFragment extends Fragment{
                 }
                 isShifted = !isShifted;
                 hideTimer.start();
+
+                Toast.makeText(getActivity(), "SNAP ID: " + mCurrentSnap.getID(), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -201,6 +219,7 @@ public class NewSnapFragment extends Fragment{
 
         if(requestCode == REQUEST_PHOTO) {
             updatePhotoView();
+            Log.d("TAG", "onActivityResult: Request_Photo");
         }
     }
 
@@ -211,16 +230,23 @@ public class NewSnapFragment extends Fragment{
     }
 
     private void updatePhotoView() {
-        RecipeBook.getTheRecipeBook(getActivity()).getLatest().newSnap();
-        NewRecipeSnapPagerActivity.update();
+        //RecipeBook.getTheRecipeBook(getActivity()).getLatest().newSnap();
+        Snap newSnap = RecipeBook.getTheRecipeBook(getActivity()).getRecipe(recipeID).newSnap();
+        Log.d("TAG", "newSnap created with id: " + newSnap.getID() + " in recipe with ID: "+ recipeID);
+        ((NewRecipeSnapPagerActivity) getActivity()).update();
 
 
         if (mPhotoFile == null || !mPhotoFile.exists()) {
             mSnapImage.setImageDrawable(null);
         } else {
             Log.d("TAG", "Updateed image!!!!!!!!!!!");
-            Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
-            mSnapImage.setImageBitmap(bitmap);
+            //Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
+
+            //Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
+            /*Bitmap bitmap = PictureUtils.getScaledBitmap(
+                    RecipeBook.getTheRecipeBook(getActivity())
+                            .getPhotoFile(newSnap).getPath(), getActivity());*/
+            //mSnapImage.setImageBitmap(bitmap);
         }
     }
 }

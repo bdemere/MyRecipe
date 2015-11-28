@@ -12,7 +12,7 @@ public class PictureUtils {
 
     public static Bitmap getScaledBitmap(String path, Activity activity) {
         Point size = new Point();
-        activity.getWindowManager().getDefaultDisplay().getSize(size);
+        //activity.getWindowManager().getDefaultDisplay().getSize(size);
 
         return getScaledBitmap(path, size.x, size.y);
     }
@@ -38,6 +38,6 @@ public class PictureUtils {
         options.inSampleSize = inSampleSize;
 
         //Read in and creat final bitmap
-        return BitmapFactory.decodeFile(path, options);
+        return BitmapFactory.decodeFile(path);
     }
 }

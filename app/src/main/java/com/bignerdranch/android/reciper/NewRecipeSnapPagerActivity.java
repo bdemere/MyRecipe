@@ -7,10 +7,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 
+import com.bignerdranch.android.reciper.data.Recipe;
+import com.bignerdranch.android.reciper.data.Snap;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.UUID;
 
 /**
@@ -20,10 +25,10 @@ public class NewRecipeSnapPagerActivity extends FragmentActivity {
     private static final String EXTRA_RECIPE_ID =
             "com.genius.android.reciper.snap_id";
 
-    private static ViewPager mViewPager;
-    private static UUID mRecipeID;
-    private static Recipe mRecipe;
-    private static ArrayList<Snap> mRecipeSnaps;
+    private ViewPager mViewPager;
+    private UUID mRecipeID;
+    private Recipe mRecipe;
+    private ArrayList<Snap> mRecipeSnaps;
 
     public static Intent newIntent(Context packageContext, UUID recipeID){
         Intent intent = new Intent(packageContext, NewRecipeSnapPagerActivity.class);
@@ -46,11 +51,10 @@ public class NewRecipeSnapPagerActivity extends FragmentActivity {
 
         mRecipeSnaps = mRecipe.getSnaps();
 
-
-
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        mViewPager.setAdapter(new FragmentPagerAdapter(fragmentManager) {
+        mViewPager.setAdapter(new FragmentStatePagerAdapter(fragmentManager) {
+
             @Override
             public Fragment getItem(int position) {
                 //Snap snap = mRecipe.get(position);
@@ -59,7 +63,9 @@ public class NewRecipeSnapPagerActivity extends FragmentActivity {
                 Log.d("I'm Here", "" + mRecipeSnaps.size());
                 if(position == mRecipeSnaps.size() - 1)
                     isCamera = !isCamera; //switch view from a page showing an image into a page showing a camera button
-                return NewSnapFragment.newInstance(position, mRecipeID, isCamera);
+
+                Log.d("TAG", "creatttttttting");
+                return NewSnapFragment.newInstance(mRecipeSnaps.size() - 1 - position, mRecipeID, isCamera);
             }
 
             @Override
@@ -71,10 +77,11 @@ public class NewRecipeSnapPagerActivity extends FragmentActivity {
             public int getCount() {
                 return mRecipeSnaps.size();
             }
+
         });
     }
 
-    public static void update(){
+    public void update(){
         mViewPager.getAdapter().notifyDataSetChanged();
     }
 

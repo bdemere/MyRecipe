@@ -7,8 +7,10 @@
         />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="18"
-        />
+        android:maxSdkVersion="18"/>
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" />
@@ -33,16 +35,17 @@
             android:name=".RecipeListActivity"
             android:label = "Recipe List"></activity>
 
-        <activity android:name=".SnapPagerActivity"
+        <activity android:name=".SnapControllers.SnapPagerActivity"
             android:label = "Snap SlideShow"></activity>
 
         <activity android:name=".NewRecipePageActivity"
             android:label = "New Recipe Page"></activity>
 
-        <activity android:name=".NewRecipeSnapPagerActivity"
+        <activity android:name=".SnapControllers.NewRecipeSnapPagerActivity"
             android:label = "New Recipe Snaps"></activity>
 
         <activity android:name=".DetailRecipeActivity"
+            android:parentActivityName=".RecipeListActivity">
             android:label = "Recipe Detail"></activity>
         
 

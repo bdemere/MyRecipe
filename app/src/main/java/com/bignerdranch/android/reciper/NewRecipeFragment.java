@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.bignerdranch.android.reciper.data.RecipeBook;
+
 /**
  * Created by bubujay on 11/19/15.
  */
@@ -35,11 +37,11 @@ public class NewRecipeFragment extends Fragment {
         View v = inflater.inflate(R.layout.new_recipe_page, container, false);
         mNewPhoto = (Button)v.findViewById(R.id.new_recipe_camera_button);
 
-        mTheBook = RecipeBook.getTheRecipeBook();
+        mTheBook = RecipeBook.getTheRecipeBook(getActivity());
         mNewPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mTheBook.getLatest().newSnap();
+                mTheBook.getLatestRecipe().newSnap();
             }
         });
 
@@ -56,7 +58,7 @@ public class NewRecipeFragment extends Fragment {
 
         /*mTheBook = RecipeBook.getTheRecipeBook();
         mTheBook.newRecipe("test");
-        Snap testSnap = mTheBook.getLatest().newSnap();
+        Snap testSnap = mTheBook.getLatestRecipe().newSnap();
 
         PackageManager packageManager = getActivity().getPackageManager();
 

@@ -3,8 +3,9 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
+
     defaultConfig {
-        applicationId 'com.genius.android.reciper'
+        applicationId "com.bignerdranch.android.reciper"
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
@@ -15,8 +16,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-    productFlavors {
     }
 }
 

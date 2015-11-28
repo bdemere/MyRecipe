@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bignerdranch.android.reciper.data.Recipe;
+import com.bignerdranch.android.reciper.data.RecipeBook;
+
 import java.util.List;
 
 /**
@@ -98,7 +101,7 @@ public class RecipeListFragment extends Fragment {
     }
 
     private void updateUI(){
-        RecipeBook book = RecipeBook.getTheRecipeBook();
+        RecipeBook book = RecipeBook.getTheRecipeBook(getActivity());
         List<Recipe> recipes = book.getTheRecipes();
         mAdapter = new RecipeAdapter(recipes);
         mRecipeRecyclerView.setAdapter(mAdapter);

@@ -4,10 +4,15 @@ package com.bignerdranch.android.reciper;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import com.bignerdranch.android.reciper.SnapControllers.NewRecipeSnapPagerActivity;
+import com.bignerdranch.android.reciper.data.Recipe;
+import com.bignerdranch.android.reciper.data.RecipeBook;
 
 /**
  * Created by bubujay on 11/13/15.
@@ -41,7 +46,7 @@ public class HomePageFragment extends Fragment {
         mNewRecipe = (Button)v.findViewById(R.id.new_recipe_button);
         mAllRecipes = (Button)v.findViewById(R.id.all_recipes_button);
 
-        mTheBook = RecipeBook.getTheRecipeBook();
+        mTheBook = RecipeBook.getTheRecipeBook(getActivity());
 
         mNewRecipe.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,8 +54,9 @@ public class HomePageFragment extends Fragment {
                 /*Intent intent = new Intent(getActivity(), NewRecipePageActivity.class);
                 startActivity(intent);*/
                 Recipe recipe = mTheBook.newRecipe("temp");
-                recipe.newSnap();
-                recipe.newSnap();
+                Log.d("TAG  ", "ID sent:: " + recipe.getID());
+                //recipe.newSnap();
+                //recipe.newSnap();
                 Intent intent = NewRecipeSnapPagerActivity.newIntent(getActivity(), recipe.getID());
                 startActivity(intent);
             }

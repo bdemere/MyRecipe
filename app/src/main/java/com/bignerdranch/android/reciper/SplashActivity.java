@@ -11,10 +11,6 @@ public class SplashActivity extends AppCompatActivity {
 
     private TextView mStartTextView;
 
-
-    private Camera mCamera = null;
-    private CameraView mCameraView = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

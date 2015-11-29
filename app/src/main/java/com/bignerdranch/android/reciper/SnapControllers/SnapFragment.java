@@ -1,25 +1,39 @@
-package com.bignerdranch.android.reciper;
+package com.bignerdranch.android.reciper.SnapControllers;
 
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
-import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bignerdranch.android.reciper.data.Snap;
+import com.bignerdranch.android.reciper.Comment.DisplayCommentsDialog;
+import com.bignerdranch.android.reciper.Models.Recipe;
+import com.bignerdranch.android.reciper.PictureUtils;
+import com.bignerdranch.android.reciper.R;
+import com.bignerdranch.android.reciper.Models.Comment;
+import com.bignerdranch.android.reciper.RecipeBook;
+import com.bignerdranch.android.reciper.Models.Snap;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -29,12 +43,14 @@ public class SnapFragment extends Fragment{
 
     final static String SNAP_ID = "com.genius.android.reciper.SNAP_ID";
     final static String RECIPE_ID = "com.genius.android.reciper.RECIPE_ID";
-    //private List<Snap> mRecipe;
-    private Snap mCurrentSnap;
+
+    private ImageView mSnapImage;
+    private Button mRetakeButton;
+    private Button mWrapUpButton;
+
     private Button mVP;
     private TextView mcoordView;
     private TextView mTitle;
-    private ImageView mSnapImage;
     private Bitmap mSnapBitmap;
     private Button mButtonTemp;
     /* ...on touch variables ... */
@@ -43,14 +59,17 @@ public class SnapFragment extends Fragment{
 
     private boolean isShifted = false;
     //private int shiftFactor = 1;
-    private Button mRetakeButton;
-    private Button mWrapUpButton;
+
     private int snapID;
     private UUID recipeID;
+    private RecipeBook mTheBook;
+    private Recipe mRecipe;
+    private ArrayList<Snap> mSnaps;
+    private Snap mCurrentSnap;
+
     public float x;
     public float y;
 
-    //private Bitmap background = ((BitmapDrawable)getResources().getDrawable(R.drawable.kitchen2)).getBitmap();
 
     public static SnapFragment newInstance(int position, UUID recipeID) {
         Bundle args = new Bundle();
@@ -67,12 +86,16 @@ public class SnapFragment extends Fragment{
         super.onCreate(savedInstanceState);
         snapID = (int)getArguments().getSerializable(SNAP_ID);
         recipeID = (UUID)getArguments().getSerializable(RECIPE_ID);
+
+        mTheBook = RecipeBook.getTheRecipeBook(getActivity());
+        mRecipe = mTheBook.getRecipe(recipeID);
+        mSnaps = mTheBook.getSnaps(recipeID);
+        mCurrentSnap = mSnaps.get(snapID);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.recipe_snap, container, false);
-        mCurrentSnap = RecipeBook.getTheRecipeBook(getActivity()).getRecipe(recipeID).getSnaps().get(snapID);
 
         mSnapImage = (ImageView) v.findViewById(R.id.snap_imageView);
         mRetakeButton = (Button) v.findViewById(R.id.retake_button);
@@ -84,8 +107,21 @@ public class SnapFragment extends Fragment{
         File mPhotoFile = RecipeBook.getTheRecipeBook(getActivity()).getPhotoFile(mCurrentSnap);
         Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
 
-        mSnapImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = size.y;
+
+        //mSnapImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        Drawable drawable = new BitmapDrawable(getResources(), bitmap);
+        mSnapImage.setImageDrawable(drawable);
+        //Bitmap tempBitmap = getResizedBitmap(RotateBitmap(bitmap, 90), width, height);
+        //bitmap = drawCommentLocations(tempBitmap);
+        bitmap = drawCommentLocations(bitmap);
         mSnapImage.setImageBitmap(bitmap);
+        //mSnapImage.setImageBitmap(bitmap);
 
         //mButtonTemp = (Button) v.findViewById(R.id.button_temp);
 
@@ -128,8 +164,6 @@ public class SnapFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 Log.d("mSnapImage", ": short Pressed");
-                //mSnapImage.animate().y(isShifted * mRetakeButton.getHeight()).setDuration(300);
-                //mSnapImage.animate().y(isShifted * mRetakeButton.getHeight()).setDuration(300);
                 float shiftFactorR = 250;//dpToPx(mRetakeButton.getWidth());
                 float shiftFactorW = 250;//dpToPx(mWrapUpButton.getWidth());
                 int speed = 200;
@@ -159,20 +193,79 @@ public class SnapFragment extends Fragment{
         mSnapImage.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                String toastString = "x : " + x + " y: " + y;
+                /*String toastString = "x : " + x + " y: " + y;
                 Toast.makeText(getActivity(), toastString, Toast.LENGTH_SHORT).show();
                 Log.d("fragment", "you long-touched at x: " + x + " y: " + y);
-                CommentDialog dialog = CommentDialog.newInstance(x, y);
-                dialog.show(getFragmentManager(), "comment at xy");
+                CommentDialog dialog = CommentDialog.newInstance(x, y, snapID);
+                dialog.show(getFragmentManager(), "comment at xy");*/
+                //Comment result = RecipeBook.getTheRecipeBook(getContext()).getRecipe(recipeID).getSnap(snapID).getLatestComment();//mCurrentSnap.searchComments((int)x, (int)y);
+
+                Comment result = mCurrentSnap.searchComments(x, y);
+
+                if(result == null)
+                    Toast.makeText(getActivity(), "No Comment", Toast.LENGTH_SHORT).show();
+                else {
+                    DisplayCommentsDialog dialog = DisplayCommentsDialog.newInstance(x, y, recipeID, snapID);
+                    dialog.show(getFragmentManager(), "comment at xy");
+                }
                 return false;
             }
         });
         return v;
     }
 
-    public float dpToPx(int dp) {
-        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
-        float px = dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT);
-        return px;
+    public Bitmap drawCommentLocations(Bitmap bitmap){
+        Bitmap tick = BitmapFactory.decodeResource(getResources(), R.drawable.commentn);
+        Bitmap smallTick =  getResizedBitmap(tick, 100, 100);
+        ArrayList<Comment> currentSnapComments = mCurrentSnap.getComments();
+        for(Comment comment:currentSnapComments){
+            Bitmap tempBitmap = overlayBitmapToxy(bitmap, smallTick, comment.getX(), comment.getY());
+            bitmap = tempBitmap;
+        }
+        return bitmap;
     }
+
+    public static Bitmap RotateBitmap(Bitmap source, float angle)
+    {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
+
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
+    }
+
+    public Bitmap overlayBitmapToxy(Bitmap Background, Bitmap tick, float mx, float my) {
+        Bitmap backgroundCopy = Background.copy(Bitmap.Config.ARGB_8888, true);
+        int backgroundWidth = backgroundCopy.getWidth();
+        int backgroundHeight = backgroundCopy.getHeight();
+        int tickWidth = tick.getWidth();
+        int tickHeight = tick.getHeight();
+
+        //float marginLeft = (float)(backgroundWidth  -mx);//tickWidth * 0.5);
+        //float marginTop =  (float)(backgroundHeight - my);//tickHeight * 0.5);
+        float marginLeft = (float)( mx - tickWidth * 0.5);
+        float marginTop = (float)( my - tickHeight * 0.5);
+
+        Bitmap overlayBitmap = Bitmap.createBitmap(backgroundWidth, backgroundHeight, backgroundCopy.getConfig());
+        Canvas canvas = new Canvas(overlayBitmap);
+        canvas.drawBitmap(backgroundCopy, new Matrix(), null);
+        canvas.drawBitmap(tick, marginLeft, marginTop, null);
+        return overlayBitmap;
+    }
+
 }

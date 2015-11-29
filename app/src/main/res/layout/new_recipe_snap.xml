@@ -8,10 +8,12 @@
     android:weightSum="1">
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/snap_imageView"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
         android:clickable="true"
         android:longClickable="true"
         android:background="#776d55"

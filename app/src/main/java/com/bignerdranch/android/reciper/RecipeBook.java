@@ -1,15 +1,25 @@
 package com.bignerdranch.android.reciper;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 
-import com.bignerdranch.android.reciper.data.Recipe;
-import com.bignerdranch.android.reciper.data.Snap;
+import com.bignerdranch.android.reciper.Models.Comment;
+import com.bignerdranch.android.reciper.Models.Recipe;
+import com.bignerdranch.android.reciper.Models.Snap;
+import com.bignerdranch.android.reciper.Database.DatabaseHelper;
+import com.bignerdranch.android.reciper.Database.RecipeCursorWrapper;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static com.bignerdranch.android.reciper.Database.CommentDbSchema.*;
+import static com.bignerdranch.android.reciper.Database.RecipeDbSchema.*;
+import static com.bignerdranch.android.reciper.Database.SnapDbSchema.*;
 
 /**
  * Created by bubujay on 11/14/15.
@@ -17,25 +27,13 @@ import java.util.UUID;
 public class RecipeBook {
     private static Context mContext;
     private static RecipeBook theRecipeBook;
-    private static int mLatestRecipe = -1;
-
-    private ArrayList<Recipe> theRecipes = new ArrayList<>();
+    private static SQLiteDatabase mDatabase;
 
     private RecipeBook(Context context){
         mContext = context.getApplicationContext();
-        //testRecipeSetter();
-        //testRecipeSetter();
-        //testRecipeSetter();
-        //testRecipeSetter();
+        mDatabase = new DatabaseHelper(mContext).getWritableDatabase();
     }
-    public void testRecipeSetter(){
-        Recipe recipe1 = new Recipe("Burger1");
-        Recipe recipe2 = new Recipe("Burger2");
-        Recipe recipe3 = new Recipe("Burger3");
-        theRecipes.add(recipe1);
-        theRecipes.add(recipe2);
-        theRecipes.add(recipe3);
-    }
+
     public static RecipeBook getTheRecipeBook(Context context) {
         if (theRecipeBook == null) {
             theRecipeBook = new RecipeBook(context);
@@ -43,28 +41,150 @@ public class RecipeBook {
         return theRecipeBook;
     }
 
-    public Recipe getRecipe(UUID ID){
+    public void addRecipe(Recipe r) {
+        ContentValues values = getContentValues(r);
+        mDatabase.insert(RecipeTable.NAME, null, values);
+    }
+
+    public void deleteRecipes(Recipe r) {
+        String uuidString = r.getID().toString();
+        mDatabase.delete(RecipeTable.NAME, RecipeTable.Cols.UUID + " = ?",
+                new String[]{uuidString});
+    }
+
+    public void addSnap(Snap s) {
+        ContentValues values = getContentValues(s);
+        mDatabase.insert(SnapTable.NAME, null, values);
+    }
+
+    public void deleteSnap(Snap s) {
+        String uuidString = s.getId().toString();
+        mDatabase.delete(SnapTable.NAME, SnapTable.Cols.UUID + " = ?",
+                new String[]{uuidString});
+    }
+
+    public void addComment(Comment c) {
+        ContentValues values = getContentValues(c);
+        mDatabase.insert(CommentTable.NAME, null, values);
+    }
+
+    public void deleteSnap(Comment c) {
+        String uuidString = c.getId().toString();
+        mDatabase.delete(CommentTable.NAME, CommentTable.Cols.UUID + " = ?",
+                new String[]{uuidString});
+    }
+
+    public Recipe getRecipe(UUID id) {
+        RecipeCursorWrapper cursor = queryRecipes(
+                RecipeTable.Cols.UUID + " = ?",
+                new String[]{id.toString()}
+        );
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
+            }
+            cursor.moveToFirst();
+            return cursor.getRecipe();
+        } finally {
+            cursor.close();
+        }
+    }
+
+    public ArrayList<Recipe> getRecipes() {
+        ArrayList<Recipe> recipes = new ArrayList<>();
+
+        RecipeCursorWrapper cursor = queryRecipes(null, null);
+
+        try {
+            cursor.moveToFirst();
+            while(!cursor.isAfterLast()) {
+                recipes.add(cursor.getRecipe());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+        return recipes;
+    }
+
+    public Snap getSnap(UUID snapId) {
+        RecipeCursorWrapper cursor = querySnaps(
+                SnapTable.Cols.UUID + " = ?",
+                new String[]{snapId.toString()}
+        );
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
+            }
+            cursor.moveToFirst();
+            return cursor.getSnap();
+        } finally {
+            cursor.close();
+        }
+    }
+
+    public ArrayList<Snap> getSnaps(UUID recipeId) {
+        ArrayList<Snap> snaps = new ArrayList<>();
+
+        RecipeCursorWrapper cursor = querySnaps(
+                SnapTable.Cols.PARENT_RECIPE + " = ?",
+                new String[]{recipeId.toString()});
+
+        try {
+            cursor.moveToFirst();
+            while(!cursor.isAfterLast()) {
+                snaps.add(0,cursor.getSnap());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+        return snaps;
+    }
+
+    public Comment getComment(UUID commentId) {
+        RecipeCursorWrapper cursor = queryComments(
+                CommentTable.Cols.UUID + " = ?",
+                new String[]{commentId.toString()}
+        );
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
+            }
+            cursor.moveToFirst();
+            return cursor.getComment();
+        } finally {
+            cursor.close();
+        }
+    }
+
+    public ArrayList<Comment> getComments(UUID snapId) {
+        ArrayList<Comment> comments = new ArrayList<>();
+
+        RecipeCursorWrapper cursor = queryComments(
+                CommentTable.Cols.PARENT_SNAP + " = ?",
+                new String[]{snapId.toString()});
+
+        try {
+            cursor.moveToFirst();
+            while(!cursor.isAfterLast()) {
+                comments.add(cursor.getComment());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+        return comments;
+    }
+
+    /*public Recipe getRecipe(UUID ID){
         for(Recipe recipe: theRecipes){
             if(recipe.getID().equals(ID)) {
                 return recipe;
             }
         }
         return null;
-    }
-    public Recipe getLatest(){
-        if(mLatestRecipe == -1)
-            return null;
-        return theRecipes.get(mLatestRecipe);
-    }
-    public List<Recipe> getTheRecipes() {
-        return theRecipes;
-    }
-    public Recipe newRecipe(String name){
-        Recipe newRecipe = new Recipe(name);
-        theRecipes.add(newRecipe);
-        mLatestRecipe++;
-        return newRecipe;
-    }
+    }*/
 
     public File getPhotoFile(Snap snap) {
         File externalFilesDir = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -74,5 +194,70 @@ public class RecipeBook {
         }
 
         return new File(externalFilesDir, snap.getPictureFileName());
+    }
+
+    private static ContentValues getContentValues(Recipe recipe) {
+        ContentValues values = new ContentValues();
+        values.put(RecipeTable.Cols.UUID, recipe.getID().toString());
+        values.put(RecipeTable.Cols.TITLE, recipe.getTitle());
+        values.put(RecipeTable.Cols.DATE, recipe.getDate().getTime());
+        return values;
+    }
+
+    private static ContentValues getContentValues(Snap snap) {
+        ContentValues values = new ContentValues();
+        values.put(SnapTable.Cols.UUID, snap.getId().toString());
+        values.put(SnapTable.Cols.PARENT_RECIPE, snap.getParentId().toString());
+        values.put(SnapTable.Cols.DATE, snap.getDate().getTime());
+        return values;
+    }
+
+    private static ContentValues getContentValues(Comment comment) {
+        ContentValues values = new ContentValues();
+        values.put(CommentTable.Cols.UUID, comment.getId().toString());
+        values.put(CommentTable.Cols.PARENT_SNAP, comment.getParentId().toString());
+        values.put(CommentTable.Cols.DATE, comment.getDate().getTime());
+        values.put(CommentTable.Cols.COMMENT, comment.getCommentText());
+
+        return values;
+    }
+
+    private RecipeCursorWrapper queryRecipes (String whereClause, String[] whereArgs) {
+        Cursor cursor = mDatabase.query(
+                RecipeTable.NAME,
+                null, //all column
+                whereClause,
+                whereArgs,
+                null, //group by
+                null, //having
+                null //order by
+        );
+        return new RecipeCursorWrapper(cursor);
+    }
+
+    private RecipeCursorWrapper querySnaps (String whereClause, String[] whereArgs) {
+        Cursor cursor = mDatabase.query(
+                SnapTable.NAME,
+                null, //all column
+                whereClause,
+                whereArgs,
+                null, //group by
+                null, //having
+                null //order by
+        );
+        return new RecipeCursorWrapper(cursor);
+    }
+
+    private RecipeCursorWrapper queryComments (String whereClause, String[] whereArgs) {
+        Cursor cursor = mDatabase.query(
+                CommentTable.NAME,
+                null, //all column
+                whereClause,
+                whereArgs,
+                null, //group by
+                null, //having
+                null //order by
+        );
+        return new RecipeCursorWrapper(cursor);
     }
 }

@@ -1,4 +1,4 @@
-package com.bignerdranch.android.reciper;
+package com.bignerdranch.android.reciper.SnapControllers;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +9,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
-import com.bignerdranch.android.reciper.data.Snap;
+import com.bignerdranch.android.reciper.Models.Recipe;
+import com.bignerdranch.android.reciper.R;
+import com.bignerdranch.android.reciper.RecipeBook;
+import com.bignerdranch.android.reciper.Models.Snap;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -27,6 +30,7 @@ public class SnapPagerActivity extends FragmentActivity {
     private UUID mRecipeID;
     private int mStartPos;
     private ArrayList<Snap> mRecipeSnaps;
+    private Recipe mRecipe;
 
     public static Intent newIntent(Context packageContext, UUID recipeID, int startPosition){
         Intent intent = new Intent(packageContext, SnapPagerActivity.class);
@@ -40,11 +44,16 @@ public class SnapPagerActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_snap_pager);
         mViewPager = (ViewPager) findViewById(R.id.activity_snap_pager_view_pager);
+        mViewPager.setPageMargin(60);
 
         mRecipeID = (UUID)getIntent().getSerializableExtra(EXTRA_RECIPE_ID);
         mStartPos = (int)getIntent().getSerializableExtra(EXTRA_START_POSITION);
 
-        mRecipeSnaps = (ArrayList)RecipeBook.getTheRecipeBook(this).getRecipe(mRecipeID).getSnaps();
+        mRecipe = RecipeBook.getTheRecipeBook(this).getRecipe(mRecipeID);
+
+        mRecipeSnaps = RecipeBook.getTheRecipeBook(this).getSnaps(mRecipeID);
+
+        //mRecipeSnaps = (ArrayList) RecipeBook.getTheRecipeBook(this).getRecipe(mRecipeID).getSnaps();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 

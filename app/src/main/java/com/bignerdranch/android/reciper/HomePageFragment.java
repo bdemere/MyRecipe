@@ -10,17 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.bignerdranch.android.reciper.data.Recipe;
-
+import com.bignerdranch.android.reciper.Models.Snap;
+import com.bignerdranch.android.reciper.SnapControllers.NewRecipeSnapPagerActivity;
+import com.bignerdranch.android.reciper.Models.Recipe;
 /**
  * Created by bubujay on 11/13/15.
  */
 public class HomePageFragment extends Fragment {
 
     final static String SNAP_ID = "com.genius.android.reciper";
+
     private Button mNewRecipe;
     private Button mAllRecipes;
-
     private RecipeBook mTheBook;
 
 
@@ -41,20 +42,23 @@ public class HomePageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.start_page, container, false);
+
         mNewRecipe = (Button)v.findViewById(R.id.new_recipe_button);
         mAllRecipes = (Button)v.findViewById(R.id.all_recipes_button);
-
         mTheBook = RecipeBook.getTheRecipeBook(getActivity());
 
         mNewRecipe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Intent intent = new Intent(getActivity(), NewRecipePageActivity.class);
-                startActivity(intent);*/
-                Recipe recipe = mTheBook.newRecipe("temp");
-                Log.d("TAG  ", "ID sent:: " + recipe.getID());
-                //recipe.newSnap();
-                //recipe.newSnap();
+                // Create a new recipe
+                Recipe recipe = new Recipe();
+                recipe.setTitle("Recipe");
+                mTheBook.addRecipe(recipe);
+
+                // Add a dummy snap to the recipe for the 'Add snap' page
+                Snap snap = Recipe.newSnap(recipe.getID());
+                mTheBook.addSnap(snap);
+
                 Intent intent = NewRecipeSnapPagerActivity.newIntent(getActivity(), recipe.getID());
                 startActivity(intent);
             }

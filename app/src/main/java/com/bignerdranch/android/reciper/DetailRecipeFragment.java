@@ -3,6 +3,7 @@ package com.bignerdranch.android.reciper;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,8 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bignerdranch.android.reciper.data.Recipe;
-import com.bignerdranch.android.reciper.data.Snap;
+import com.bignerdranch.android.reciper.SnapControllers.SnapPagerActivity;
+import com.bignerdranch.android.reciper.Models.Recipe;
+import com.bignerdranch.android.reciper.RecipeBook;
+import com.bignerdranch.android.reciper.Models.Snap;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,7 +46,8 @@ public class DetailRecipeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mRecipeID = (UUID)getArguments().getSerializable(RECIPE_ID);
         mRecipe = RecipeBook.getTheRecipeBook(getActivity()).getRecipe(mRecipeID);
-        mSnaps = mRecipe.getSnaps();
+        //mSnaps = mRecipe.getSnaps();
+        mSnaps = RecipeBook.getTheRecipeBook(getActivity()).getSnaps(mRecipeID);
     }
 
     @Override
@@ -83,6 +87,8 @@ public class DetailRecipeFragment extends Fragment {
                 mItemImageView.setImageDrawable(null);
             } else {
                 Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
+                //Bitmap tempBitmap = getResizedBitmap(RotateBitmap(bitmap, 90), 600, 1000);
+                //bitmap = tempBitmap;
                 mItemImageView.setImageBitmap(bitmap);
             }
 
@@ -128,5 +134,29 @@ public class DetailRecipeFragment extends Fragment {
     private void updateUI(){
         mAdapter = new PhotoAdapter(mSnaps);
         mPhotoRecyclerView.setAdapter(mAdapter);
+    }
+
+    public static Bitmap RotateBitmap(Bitmap source, float angle)
+    {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
+
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
     }
 }

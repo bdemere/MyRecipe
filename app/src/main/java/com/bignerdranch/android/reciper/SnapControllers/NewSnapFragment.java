@@ -29,7 +29,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bignerdranch.android.reciper.Comment.CommentDialog;
+import com.bignerdranch.android.reciper.Comment.EditCommentDialog;
 import com.bignerdranch.android.reciper.PictureUtils;
 import com.bignerdranch.android.reciper.R;
 import com.bignerdranch.android.reciper.data.Comment;
@@ -38,6 +38,7 @@ import com.bignerdranch.android.reciper.data.RecipeBook;
 import com.bignerdranch.android.reciper.data.Snap;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -68,6 +69,7 @@ public class NewSnapFragment extends Fragment{
     //private int shiftFactor = 1;
     private Button mRetakeButton;
     private Button mWrapUpButton;
+
     private int snapID;
     private UUID recipeID;
     private Recipe mRecipe;
@@ -108,6 +110,12 @@ public class NewSnapFragment extends Fragment{
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.new_recipe_snap, container, false);
 
@@ -116,6 +124,8 @@ public class NewSnapFragment extends Fragment{
         mRetakeButton = (Button) v.findViewById(R.id.retake_button);
         mWrapUpButton = (Button) v.findViewById(R.id.wrapup_button);
         mAddSnapButton = (Button) v.findViewById(R.id.add_snap_button);
+
+
         mSnapImage.setClickable(true);
 
         Log.d("TAG", "snap being  created with id: " + mCurrentSnap.getID() + " in recipe with ID: " + recipeID + " and isCamera: " + isCamera);
@@ -138,8 +148,9 @@ public class NewSnapFragment extends Fragment{
         if(!isCamera) {
             //Drawable drawable = new BitmapDrawable(getResources(), mBackground);
             Bitmap tempBackground = getResizedBitmap(RotateBitmap(mBackground, 90), width, height);
-            mBackground = tempBackground;
-            mSnapImage.setImageBitmap(tempBackground);
+
+            mBackground = drawCommentLocations(tempBackground);
+            mSnapImage.setImageBitmap(mBackground);
             //mSnapImage.setScaleType(ImageView.ScaleType.MATRIX);
 
         }
@@ -211,10 +222,13 @@ public class NewSnapFragment extends Fragment{
                 Log.d("fragment", "you long-touched at x: " + x + " y: " + y);
                 Comment result = mCurrentSnap.searchComments(x,y);
                 if(result == null) {
+                    Toast.makeText(getActivity(), "New Comment", Toast.LENGTH_SHORT).show();
                     Bitmap tick = BitmapFactory.decodeResource(getResources(), R.drawable.commentn);
                     mSnapImage.setImageBitmap(overlayBitmapToxy(mBackground, getResizedBitmap(tick, 100, 100), x, y));
+                }else{
+                    Toast.makeText(getActivity(), "Adding comment", Toast.LENGTH_SHORT).show();
                 }
-                CommentDialog dialog = CommentDialog.newInstance(x, y, snapID);
+                EditCommentDialog dialog = EditCommentDialog.newInstance(x, y, snapID);
                 dialog.show(getFragmentManager(), "comment at xy");
                 return false;
             }
@@ -236,6 +250,7 @@ public class NewSnapFragment extends Fragment{
                 startActivityForResult(captureImage, REQUEST_PHOTO);
             }
         });
+
 
         //updatePhotoView();
         return v;
@@ -300,6 +315,19 @@ public class NewSnapFragment extends Fragment{
         DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
         float px = dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT);
         return px;
+    }
+
+    public Bitmap drawCommentLocations(Bitmap bitmap){
+        Bitmap tick = BitmapFactory.decodeResource(getResources(), R.drawable.commentn);
+        Bitmap smallTick =  getResizedBitmap(tick, 100, 100);
+        if(mCurrentSnap.hasComments()) {
+            ArrayList<Comment> currentSnapComments = mCurrentSnap.getComments();
+            for (Comment comment : currentSnapComments) {
+                Bitmap tempBitmap = overlayBitmapToxy(bitmap, smallTick, comment.getX(), comment.getY());
+                bitmap = tempBitmap;
+            }
+        }
+        return bitmap;
     }
 
     private void updatePhotoView() {

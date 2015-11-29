@@ -14,7 +14,7 @@
         android:scaleType="centerCrop"
         android:clickable="true"
         android:longClickable="true"
-        android:background="#776d55"
+        android:background="#9c9c9c"
         android:contentDescription="@string/image_content_description"/>
     <Button
         android:layout_width="80dp"
@@ -36,7 +36,7 @@
     <Button
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:text="Add Snap"
+        android:background="@drawable/round_borders"
         android:id="@+id/add_snap_button"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />

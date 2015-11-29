@@ -11,12 +11,14 @@ import java.util.UUID;
  */
 
 public class Snap {
+
     private Context mContext;
     private UUID mID;
     private int mPicture;
     private UUID mParentRecipeID;
     private File mPhotoFile;
     private String mPictureFileName;
+
 
     private ArrayList<Comment> mComments;
 
@@ -52,6 +54,11 @@ public class Snap {
         mID = UUID.randomUUID();
         mParentRecipeID = RecipeID;
         mComments = new ArrayList<>();
+        mPictureFileName = "IMG_"
+                + mID.toString()
+                + "_" + mParentRecipeID.toString() + ".jpg";
+
+
     }
 
     public UUID getID() {
@@ -63,11 +70,10 @@ public class Snap {
     }
 
     public String getPictureFileName(){
-        String toReturn = "IMG_"
-                + mID.toString()
-                + "_" + mParentRecipeID.toString() + ".jpg";
-        return toReturn;
+        return mPictureFileName;
     }
+
+
     /*public File getPhotoFile() {
         return mPhotoFile;
     }*/

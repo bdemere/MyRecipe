@@ -10,8 +10,11 @@ public class Comment {
     private float y;
     private String textComment;
     private ArrayList<String> textComments;
+    private ArrayList<String> mAudioFileName;
+    public static int audioFilesCounter = 0;
 
     public Comment(){
+        mAudioFileName = new ArrayList<>();
         textComments = new ArrayList<>();
     }
 
@@ -43,6 +46,14 @@ public class Comment {
     }
     public ArrayList<String> getTextComments(){
         return textComments;
+    }
+
+    public String getAudioFileName(){
+        mAudioFileName.add("AUD_"
+                + x
+                +"_" + y + audioFilesCounter + ".3gp");
+        audioFilesCounter++;
+        return mAudioFileName.get(mAudioFileName.size() - 1);
     }
 
 

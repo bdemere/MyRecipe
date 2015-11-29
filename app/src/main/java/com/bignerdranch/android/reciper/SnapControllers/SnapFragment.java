@@ -7,8 +7,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
@@ -105,8 +103,8 @@ public class SnapFragment extends Fragment{
         int height = size.y;
 
         //mSnapImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-        mSnapImage.setImageDrawable(drawable);
+        //Drawable drawable = new BitmapDrawable(getResources(), bitmap);
+        //mSnapImage.setImageDrawable(drawable);
         Bitmap tempBitmap = getResizedBitmap(RotateBitmap(bitmap, 90), width, height);
         bitmap = drawCommentLocations(tempBitmap);
         mSnapImage.setImageBitmap(bitmap);
@@ -185,7 +183,7 @@ public class SnapFragment extends Fragment{
                 /*String toastString = "x : " + x + " y: " + y;
                 Toast.makeText(getActivity(), toastString, Toast.LENGTH_SHORT).show();
                 Log.d("fragment", "you long-touched at x: " + x + " y: " + y);
-                CommentDialog dialog = CommentDialog.newInstance(x, y, snapID);
+                EditCommentDialog dialog = EditCommentDialog.newInstance(x, y, snapID);
                 dialog.show(getFragmentManager(), "comment at xy");*/
                 //Comment result = RecipeBook.getTheRecipeBook(getContext()).getRecipe(recipeID).getSnap(snapID).getLatestComment();//mCurrentSnap.searchComments((int)x, (int)y);
 

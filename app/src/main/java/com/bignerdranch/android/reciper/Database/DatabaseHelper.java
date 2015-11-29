@@ -38,7 +38,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     CommentTable.Cols.UUID + ", " +
                     CommentTable.Cols.PARENT_SNAP + ", " +
                     CommentTable.Cols.DATE + ", " +
-                    CommentTable.Cols.COMMENT +
+                    CommentTable.Cols.COMMENT + ", " +
+                    CommentTable.Cols.X_COORD + ", " +
+                    CommentTable.Cols.Y_COORD +
                     ")";
 
 

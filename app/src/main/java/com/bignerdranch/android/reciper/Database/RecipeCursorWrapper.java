@@ -51,11 +51,15 @@ public class RecipeCursorWrapper extends CursorWrapper{
         String parentuuid = getString(getColumnIndex(CommentTable.Cols.PARENT_SNAP));
         long date = getLong(getColumnIndex(CommentTable.Cols.DATE));
         String commentStr = getString(getColumnIndex(CommentTable.Cols.COMMENT));
+        float x = getFloat(getColumnIndex(CommentTable.Cols.X_COORD));
+        float y = getFloat(getColumnIndex(CommentTable.Cols.Y_COORD));
 
         Comment comment = new Comment(UUID.fromString(uuidString));
-        comment.setCommentText(commentStr);
         comment.setParentSnapID(UUID.fromString(parentuuid));
         comment.setDate(new Date(date));
+        comment.setCommentsText(commentStr);
+        comment.setX(x);
+        comment.setY(y);
 
         return comment;
     }

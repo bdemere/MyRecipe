@@ -39,6 +39,7 @@ import com.bignerdranch.android.reciper.Models.Snap;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -52,6 +53,8 @@ public class NewSnapFragment extends Fragment{
     final static String COMMENT_DIALOG = "com.genius.android.reciper.COMMENT_DIALOG";
 
     private static final int REQUEST_PHOTO = 0;
+    private static final int REQUEST_COMMENTS = 1;
+
 
     private ImageView mSnapImage;
     private Button mRetakeButton;
@@ -107,6 +110,8 @@ public class NewSnapFragment extends Fragment{
         mRecipe = mTheBook.getRecipe(recipeID);
         mSnaps = mTheBook.getSnaps(recipeID);
         mCurrentSnap = mSnaps.get(snapID);
+        //mCurrentSnap.setComments(mTheBook.getComments(mCurrentSnap.getId()));
+
         mPhotoFile = mTheBook.getPhotoFile(mCurrentSnap);
 
         Log.d("TAG", "mPhotoFile set to snap with id: " + mCurrentSnap.getId());
@@ -116,6 +121,7 @@ public class NewSnapFragment extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d("TAG", "onCreateView() called");
         View v = inflater.inflate(R.layout.new_recipe_snap, container, false);
 
 
@@ -223,6 +229,7 @@ public class NewSnapFragment extends Fragment{
                     mSnapImage.setImageBitmap(overlayBitmapToxy(mBackground, getResizedBitmap(tick, 100, 100), x, y));
                 }
                 CommentDialog dialog = CommentDialog.newInstance(x, y, snapID, recipeID);
+                dialog.setTargetFragment(NewSnapFragment.this, REQUEST_COMMENTS);
                 dialog.show(getFragmentManager(), "comment at xy");
                 return false;
             }
@@ -253,6 +260,12 @@ public class NewSnapFragment extends Fragment{
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode != Activity.RESULT_OK) {
             return;
+        }
+
+        if(resultCode != REQUEST_COMMENTS) {
+            Log.d("TAG", "onActivityResult: REQUEST_COMMENTS");
+            mSnaps = mTheBook.getSnaps(recipeID);
+            mCurrentSnap = mSnaps.get(snapID);
         }
 
         if(requestCode == REQUEST_PHOTO) {

@@ -91,6 +91,7 @@ public class SnapFragment extends Fragment{
         mRecipe = mTheBook.getRecipe(recipeID);
         mSnaps = mTheBook.getSnaps(recipeID);
         mCurrentSnap = mSnaps.get(snapID);
+        //mCurrentSnap.setComments(mTheBook.getComments(mCurrentSnap.getId()));
     }
 
     @Override
@@ -217,7 +218,10 @@ public class SnapFragment extends Fragment{
     public Bitmap drawCommentLocations(Bitmap bitmap){
         Bitmap tick = BitmapFactory.decodeResource(getResources(), R.drawable.commentn);
         Bitmap smallTick =  getResizedBitmap(tick, 100, 100);
+
+        //mCurrentSnap.setComments(mTheBook.getComments(mCurrentSnap.getId()));
         ArrayList<Comment> currentSnapComments = mCurrentSnap.getComments();
+
         for(Comment comment:currentSnapComments){
             Bitmap tempBitmap = overlayBitmapToxy(bitmap, smallTick, comment.getX(), comment.getY());
             bitmap = tempBitmap;
@@ -267,5 +271,4 @@ public class SnapFragment extends Fragment{
         canvas.drawBitmap(tick, marginLeft, marginTop, null);
         return overlayBitmap;
     }
-
 }

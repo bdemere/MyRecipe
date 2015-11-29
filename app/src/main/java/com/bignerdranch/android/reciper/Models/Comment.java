@@ -1,6 +1,7 @@
 package com.bignerdranch.android.reciper.Models;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
@@ -13,8 +14,7 @@ public class Comment {
     private UUID mParentSnapID;
     private float x;
     private float y;
-    private String textComment;
-    private ArrayList<String> textComments;
+    private String commentsText = ""; //combined string of all comments strings of this object
 
     public Comment(){
         this(UUID.randomUUID());
@@ -22,16 +22,15 @@ public class Comment {
 
     public Comment(UUID id) {
         mID = id;
-        textComments = new ArrayList<>();
         mDate = new Date();
     }
 
-    public String getCommentText() {
-        return textComment;
+    public String getCommentsText() {
+        return commentsText;
     }
 
-    public void setCommentText(String text) {
-        textComment = text;
+    public void setCommentsText(String text) {
+        commentsText = text;
     }
 
     public void setParentSnapID (UUID parentId) {
@@ -70,19 +69,27 @@ public class Comment {
         this.y = y;
     }
 
-    public void setTextComment(String text){
-        textComment = text;
-    }
     public void addTextComment(String text) {
-        textComments.add(text);
-    }
-    public String getTextComment(){
-        return textComment;
-    }
-    public ArrayList<String> getTextComments(){
-        return textComments;
+        ArrayList<String> list = getCommentsList();
+        list.add(text);
+        setCommentsText(encode(list));
     }
 
+    public ArrayList<String> getCommentsList(){
+        return decode(commentsText);
+    }
 
+    public static String encode(ArrayList<String> comments) {
+        String encoded = comments.get(0);
+        for(int i = 1; i < comments.size(); i++) {
+            encoded = encoded + "`" + comments.get(i);
+        }
+        return encoded;
+    }
+
+    public static ArrayList<String> decode(String textComment) {
+        String[] decoded = textComment.split("`");
+        return new ArrayList<String>(Arrays.asList(decoded));
+    }
 
 }

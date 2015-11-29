@@ -1,6 +1,7 @@
 package com.bignerdranch.android.reciper.Models;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class Snap {
 
     public Snap(UUID id) {
         mID = id;
-        mComments = new ArrayList<Comment>();
+        mComments = new ArrayList<>();
         mDate = new Date();
     }
 
@@ -39,9 +40,10 @@ public class Snap {
         return mComments;
     }
 
-    public void addComment(){
-        Comment newComment = new Comment();
-        mComments.add(newComment);
+    public static Comment newComment(UUID snapId){
+        Comment comment = new Comment();
+        comment.setParentSnapID(snapId);
+        return comment;
     }
 
     public Comment getLatestComment(){
@@ -49,13 +51,23 @@ public class Snap {
     }
 
     public Comment searchComments(float x, float y){
-        int side = 200;
+        int side = 175;
+        Log.d("TAG", "Number of comments: " + mComments.size());
         for(Comment comment : mComments){
-            if((int)comment.getX() / side == (int)x / side
+            /*if((int)comment.getX() / side == (int)x / side
                     && (int)comment.getY() / side == (int)y / side)
+                return comment;*/
+            Log.d("TAG", "Diff X: " + Math.abs((int)comment.getX() - (int)x));
+            Log.d("TAG", "Diff Y: " + Math.abs((int)comment.getY() - (int)y));
+            if((Math.abs((int)comment.getX() - (int)x) < side)
+                    && (Math.abs((int)comment.getY() - (int)y) < side))
                 return comment;
         }
         return null;
+    }
+
+    public void setComments(ArrayList<Comment> commentsList) {
+        mComments = commentsList;
     }
 
     public boolean hasComments(){

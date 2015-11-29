@@ -1,6 +1,8 @@
 package com.bignerdranch.android.reciper.Comment;
 
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -20,6 +22,7 @@ import com.bignerdranch.android.reciper.RecipeBook;
 import com.bignerdranch.android.reciper.Models.Snap;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -59,16 +62,14 @@ public class CommentDialog extends DialogFragment {
         mX = (float)getArguments().getSerializable(POSITION_X);
         mY = (float)getArguments().getSerializable(POSITION_Y);
         snapPos = (int)getArguments().getSerializable(SNAP_POSITION);
-        super.onCreate(savedInstanceState);
-        recipeID = (UUID)getArguments().getSerializable(RECIPE_ID);
 
+        recipeID = (UUID)getArguments().getSerializable(RECIPE_ID);
         mTheBook = RecipeBook.getTheRecipeBook(getActivity());
         mRecipe = mTheBook.getRecipe(recipeID);
         mSnaps = mTheBook.getSnaps(recipeID);
-
-        //Log.d("TAG", "current snap Id: " + mRecipe.getSnapID(snapID));
-        //mCurrentSnap = mTheBook.getSnap(mRecipe.getSnapID(snapID));
         mCurrentSnap = mSnaps.get(snapPos);
+
+        super.onCreate(savedInstanceState);
 
     }
 
@@ -90,16 +91,20 @@ public class CommentDialog extends DialogFragment {
 
         if(result == null) {
             Toast.makeText(getActivity(), "New Comment", Toast.LENGTH_SHORT).show();
-            latestSnap.addComment();
-            Comment newestComment = latestSnap.getLatestComment();
-            newestComment.addTextComment(mComment.getText().toString());
-            newestComment.setX(mX);
-            newestComment.setY(mY);
-        }
-        else {
-            result.addTextComment(mComment.getText().toString());
+            Comment comment = latestSnap.newComment(mCurrentSnap.getId());
+            comment.setX(mX);
+            comment.setY(mY);
+            mTheBook.addComment(comment);
+            //Comment newestComment = latestSnap.getLatestComment();
+            //comment.addTextComment(mComment.getText().toString());
+            mTheBook.addCommentText(mComment.getText().toString(), comment);
+
+        } else {
+            mTheBook.addCommentText(mComment.getText().toString(), result);
+            //result.addTextComment(mComment.getText().toString());
             Toast.makeText(getActivity(), "Adding a comment", Toast.LENGTH_SHORT).show();
         }
+        sendResult(Activity.RESULT_OK);
 
     }
 
@@ -122,5 +127,15 @@ public class CommentDialog extends DialogFragment {
         window.setAttributes(params);*/
 
         return view;
+    }
+
+    private void sendResult(int resultCode) {
+        if(getTargetFragment() == null) {
+            return;
+        }
+        Intent intent = new Intent();
+
+        getTargetFragment()
+                .onActivityResult(getTargetRequestCode(), resultCode, intent);
     }
 }

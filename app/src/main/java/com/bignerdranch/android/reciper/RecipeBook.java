@@ -41,6 +41,11 @@ public class RecipeBook {
         return theRecipeBook;
     }
 
+    public void addCommentText(String text, Comment comment) {
+        comment.addTextComment(text);
+        updateComment(comment);
+    }
+
     public void addRecipe(Recipe r) {
         ContentValues values = getContentValues(r);
         mDatabase.insert(RecipeTable.NAME, null, values);
@@ -49,6 +54,15 @@ public class RecipeBook {
     public void deleteRecipes(Recipe r) {
         String uuidString = r.getID().toString();
         mDatabase.delete(RecipeTable.NAME, RecipeTable.Cols.UUID + " = ?",
+                new String[]{uuidString});
+    }
+
+    public void updateRecipe(Recipe recipe) {
+        String uuidString = recipe.getID().toString();
+        ContentValues values = getContentValues(recipe);
+
+        mDatabase.update(RecipeTable.NAME, values,
+                RecipeTable.Cols.UUID + " = ?",
                 new String[]{uuidString});
     }
 
@@ -62,6 +76,14 @@ public class RecipeBook {
         mDatabase.delete(SnapTable.NAME, SnapTable.Cols.UUID + " = ?",
                 new String[]{uuidString});
     }
+    public void updateSnap(Snap snap) {
+        String uuidString = snap.getId().toString();
+        ContentValues values = getContentValues(snap);
+
+        mDatabase.update(SnapTable.NAME, values,
+                SnapTable.Cols.UUID + " = ?",
+                new String[]{uuidString});
+    }
 
     public void addComment(Comment c) {
         ContentValues values = getContentValues(c);
@@ -71,6 +93,15 @@ public class RecipeBook {
     public void deleteSnap(Comment c) {
         String uuidString = c.getId().toString();
         mDatabase.delete(CommentTable.NAME, CommentTable.Cols.UUID + " = ?",
+                new String[]{uuidString});
+    }
+
+    public void updateComment(Comment comment) {
+        String uuidString = comment.getId().toString();
+        ContentValues values = getContentValues(comment);
+
+        mDatabase.update(CommentTable.NAME, values,
+                CommentTable.Cols.UUID + " = ?",
                 new String[]{uuidString});
     }
 
@@ -133,7 +164,9 @@ public class RecipeBook {
         try {
             cursor.moveToFirst();
             while(!cursor.isAfterLast()) {
-                snaps.add(0,cursor.getSnap());
+                Snap snap = cursor.getSnap();
+                snap.setComments(getComments(snap.getId()));
+                snaps.add(0,snap);
                 cursor.moveToNext();
             }
         } finally {
@@ -217,7 +250,9 @@ public class RecipeBook {
         values.put(CommentTable.Cols.UUID, comment.getId().toString());
         values.put(CommentTable.Cols.PARENT_SNAP, comment.getParentId().toString());
         values.put(CommentTable.Cols.DATE, comment.getDate().getTime());
-        values.put(CommentTable.Cols.COMMENT, comment.getCommentText());
+        values.put(CommentTable.Cols.COMMENT, comment.getCommentsText());
+        values.put(CommentTable.Cols.X_COORD, comment.getX());
+        values.put(CommentTable.Cols.Y_COORD, comment.getY());
 
         return values;
     }

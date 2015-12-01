@@ -8,15 +8,13 @@
     android:weightSum="1">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:id="@+id/snap_imageView"
-        android:scaleType="fitXY"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
+        android:scaleType="centerCrop"
         android:clickable="true"
         android:longClickable="true"
-        android:background="#776d55"
+        android:background="#9c9c9c"
         android:contentDescription="@string/image_content_description"/>
     <Button
         android:layout_width="80dp"
@@ -38,7 +36,7 @@
     <Button
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:text="Add Snap"
+        android:background="@drawable/round_borders"
         android:id="@+id/add_snap_button"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />

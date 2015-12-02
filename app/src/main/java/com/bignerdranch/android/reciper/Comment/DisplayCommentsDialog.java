@@ -15,10 +15,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.bignerdranch.android.reciper.Models.Recipe;
 import com.bignerdranch.android.reciper.R;
-import com.bignerdranch.android.reciper.data.Comment;
-import com.bignerdranch.android.reciper.data.RecipeBook;
-import com.bignerdranch.android.reciper.data.Snap;
+import com.bignerdranch.android.reciper.Models.Comment;
+import com.bignerdranch.android.reciper.RecipeBook;
+import com.bignerdranch.android.reciper.Models.Snap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,11 @@ public class DisplayCommentsDialog extends DialogFragment {
     private UUID recipeID;
     private Comment comment;
 
+    private RecipeBook mTheBook;
+    private Recipe mRecipe;
+    private ArrayList<Snap> mSnaps;
+    private Snap mCurrentSnap;
+
     public DisplayCommentsDialog(){
     }
 
@@ -61,7 +67,13 @@ public class DisplayCommentsDialog extends DialogFragment {
         mX = (float)getArguments().getSerializable(POSITION_X);
         mY = (float)getArguments().getSerializable(POSITION_Y);
         snapPos = (int)getArguments().getSerializable(SNAP_POSITION);
+
         recipeID = (UUID)getArguments().getSerializable(RECIPE_ID);
+        mTheBook = RecipeBook.getTheRecipeBook(getActivity());
+        mRecipe = mTheBook.getRecipe(recipeID);
+        mSnaps = mTheBook.getSnaps(recipeID);
+        mCurrentSnap = mSnaps.get(snapPos);
+
         super.onCreate(savedInstanceState);
 
     }
@@ -70,7 +82,7 @@ public class DisplayCommentsDialog extends DialogFragment {
     public void onResume(){
         super.onResume();
         Window window = getDialog().getWindow();
-        int height = 350 + (comment.getTextComments().size() - 1) * 100;
+        int height = 350 + (comment.getCommentsList().size() - 1) * 100;
         int maxWidth = 800;
         int maxHeight = 800;
         if(height < maxHeight)
@@ -93,10 +105,12 @@ public class DisplayCommentsDialog extends DialogFragment {
 
         View view = inflater.inflate(R.layout.display_comment_dialog_fragment, container);
         mComment = (TextView) view.findViewById(R.id.comment_text);
-        Snap currentSnap = RecipeBook.getTheRecipeBook(getContext()).getRecipe(recipeID).getSnap(snapPos);
-        ArrayList<Comment> comments = currentSnap.getComments();
+        //Snap currentSnap = RecipeBook.getTheRecipeBook(getContext()).getRecipe(recipeID).getSnap(snapPos);
 
-        comment = currentSnap.searchComments(mX, mY);
+        //mCurrentSnap.setComments(mTheBook.getComments(mCurrentSnap.getId()));
+        //ArrayList<Comment> comments = mCurrentSnap.getComments();
+
+        comment = mCurrentSnap.searchComments(mX, mY);
 
         /*if(comment == null)
             mComment.setText("no Comment");
@@ -170,7 +184,7 @@ public class DisplayCommentsDialog extends DialogFragment {
     }
 
     private void updateUI(){
-        List<String> comments = comment.getTextComments();
+        List<String> comments = comment.getCommentsList();
         mAdapter = new RecipeAdapter(comments);
         mCommentRecyclerView.setAdapter(mAdapter);
     }

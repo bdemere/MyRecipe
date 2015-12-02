@@ -14,19 +14,24 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" />
-    <uses-permission android:name="android.permission.STORAGE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
         android:largeHeap="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
+        android:logo="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".HomePageActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme">
+        </activity>
+
+        <activity android:name=".SplashActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -35,20 +40,19 @@
 
         <activity
             android:name=".RecipeListActivity"
+            android:parentActivityName=".HomePageActivity">
             android:label = "Recipe List"></activity>
 
         <activity android:name=".SnapControllers.SnapPagerActivity"
             android:label = "Snap SlideShow"></activity>
 
-        <activity android:name=".NewRecipePageActivity"
-            android:label = "New Recipe Page"></activity>
-
         <activity android:name=".SnapControllers.NewRecipeSnapPagerActivity"
             android:label = "New Recipe Snaps"></activity>
 
         <activity android:name=".DetailRecipeActivity"
-            android:parentActivityName=".RecipeListActivity">
-            android:label = "Recipe Detail"></activity>
+            android:parentActivityName=".RecipeListActivity"
+            android:label = "RecipeDetail">
+            </activity>
         
 
     </application>

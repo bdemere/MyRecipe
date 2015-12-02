@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="1"
     android:id="@+id/start_page"
-    android:background="#9c9c9c"
     >
 
-    <RelativeLayout
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/recipe_collage_blur"/>
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
         >
 
         <Button
@@ -22,21 +28,22 @@
             android:background="@drawable/just_borders"
             android:id="@+id/new_recipe_button"
             android:textSize="18dp"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="176dp"
-            android:layout_alignRight="@+id/all_recipes_button"
-            android:layout_alignEnd="@+id/all_recipes_button" />
+            android:layout_marginBottom="8dp"
+            android:layout_gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
 
         <Button
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:text="Open saved recipes"
+            android:text="Saved recipes"
             android:id="@+id/all_recipes_button"
             android:background="@drawable/just_borders"
             android:textColor="#FFFFFF"
             android:textSize="18dp"
+            android:layout_gravity="center"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             />
-    </RelativeLayout>
-</LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

@@ -1,12 +1,8 @@
 <resources>
-    <string name="app_name">reciper</string>
+    <string name="app_name">MyRecipe</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="test">Praise God!</string>
     <string name="action_settings">Settings</string>
     <string name="image_content_description">Show picture of a snap</string>
-    <string name="record_audio_comment_dialog">Record audio</string>
-    <string name="play_audio_comment_dialog">Play audio</string>
-    <string name="stop_audio_comment_dialog">Stop audio</string>
-    <string name="save_comment_comment_dialog">Save comment</string>
 </resources>

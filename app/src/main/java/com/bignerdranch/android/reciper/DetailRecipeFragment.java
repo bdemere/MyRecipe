@@ -14,9 +14,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bignerdranch.android.reciper.SnapControllers.SnapPagerActivity;
-import com.bignerdranch.android.reciper.data.Recipe;
-import com.bignerdranch.android.reciper.data.RecipeBook;
-import com.bignerdranch.android.reciper.data.Snap;
+import com.bignerdranch.android.reciper.Models.Recipe;
+import com.bignerdranch.android.reciper.RecipeBook;
+import com.bignerdranch.android.reciper.Models.Snap;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,7 +46,8 @@ public class DetailRecipeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mRecipeID = (UUID)getArguments().getSerializable(RECIPE_ID);
         mRecipe = RecipeBook.getTheRecipeBook(getActivity()).getRecipe(mRecipeID);
-        mSnaps = mRecipe.getSnaps();
+        //mSnaps = mRecipe.getSnaps();
+        mSnaps = RecipeBook.getTheRecipeBook(getActivity()).getSnaps(mRecipeID);
     }
 
     @Override
@@ -86,8 +87,8 @@ public class DetailRecipeFragment extends Fragment {
                 mItemImageView.setImageDrawable(null);
             } else {
                 Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
-                Bitmap tempBitmap = getResizedBitmap(RotateBitmap(bitmap, 90), 600, 1000);
-                bitmap = tempBitmap;
+                //Bitmap tempBitmap = getResizedBitmap(RotateBitmap(bitmap, 90), 600, 1000);
+                //bitmap = tempBitmap;
                 mItemImageView.setImageBitmap(bitmap);
             }
 

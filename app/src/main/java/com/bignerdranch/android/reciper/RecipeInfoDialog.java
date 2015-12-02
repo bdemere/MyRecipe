@@ -11,8 +11,8 @@ import android.view.ViewGroup;
  * Created by bubujay on 11/18/15.
  */
 public class RecipeInfoDialog extends DialogFragment {
-    final static String POSITION_X = "com.genius.android.reciper.EditCommentDialog.POSITION_X";
-    final static String POSITION_Y = "com.genius.android.reciper.EditCommentDialog.POSITION_Y";
+    final static String POSITION_X = "com.genius.android.reciper.CommentDialog.POSITION_X";
+    final static String POSITION_Y = "com.genius.android.reciper.CommentDialog.POSITION_Y";
 
     private String mRecipeName;
     private String mRecipeCategory;

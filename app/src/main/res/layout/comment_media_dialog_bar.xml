@@ -7,38 +7,12 @@
 
 
     <ImageButton
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/comment_stop_button"
-        android:background="@drawable/ic_stop_48pt"
-        android:contentDescription="@string/save_comment_comment_dialog"
-        android:visibility="gone"
-        android:layout_gravity="left|bottom"
-        />
-
-    <ImageButton
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:id="@+id/comment_record_button"
-        android:background="@drawable/ic_lens_48pt"
-        android:contentDescription="@string/record_audio_comment_dialog"
-        android:visibility="visible"
-        android:layout_gravity="left|bottom" />
-
-    <ImageButton
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/comment_play_button"
-        android:background="@drawable/ic_play_arrow_48pt"
-        android:contentDescription="@string/play_audio_comment_dialog"
-        android:layout_gravity="center_horizontal|bottom" />
-
-    <ImageButton
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:id="@+id/comment_add_button"
-        android:background="@drawable/ic_add_circle_black_24dp"
-        android:contentDescription="@string/stop_audio_comment_dialog"
         android:layout_gravity="right|bottom"
-        android:layout_marginRight="5dp" />
+        android:src="@drawable/id_add"
+        android:layout_marginRight="5dp"
+        android:scaleType="centerInside"
+        android:background="#00000000"/>
 </FrameLayout>

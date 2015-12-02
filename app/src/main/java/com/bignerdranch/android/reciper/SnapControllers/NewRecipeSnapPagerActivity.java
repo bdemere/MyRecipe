@@ -11,9 +11,9 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 
 import com.bignerdranch.android.reciper.R;
-import com.bignerdranch.android.reciper.data.Recipe;
-import com.bignerdranch.android.reciper.data.RecipeBook;
-import com.bignerdranch.android.reciper.data.Snap;
+import com.bignerdranch.android.reciper.Models.Recipe;
+import com.bignerdranch.android.reciper.RecipeBook;
+import com.bignerdranch.android.reciper.Models.Snap;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -29,6 +29,7 @@ public class NewRecipeSnapPagerActivity extends FragmentActivity {
     private UUID mRecipeID;
     private Recipe mRecipe;
     private ArrayList<Snap> mRecipeSnaps;
+    private RecipeAdapter mAdapter;
 
     public static Intent newIntent(Context packageContext, UUID recipeID){
         Intent intent = new Intent(packageContext, NewRecipeSnapPagerActivity.class);
@@ -40,49 +41,53 @@ public class NewRecipeSnapPagerActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_snap_pager);
-        mViewPager = (ViewPager) findViewById(R.id.activity_snap_pager_view_pager);
 
+        mViewPager = (ViewPager) findViewById(R.id.activity_snap_pager_view_pager);
+        mViewPager.setPageMargin(60);
 
         mRecipeID = (UUID) getIntent().getSerializableExtra(EXTRA_RECIPE_ID);
-        Log.d("TAG  " , "Sizzzzzzzzzzzzze:: "+ RecipeBook.getTheRecipeBook(getBaseContext()).getTheRecipes().size());
-        Log.d("TAG  " , "ID recived:: "+ mRecipeID);
-
         mRecipe = RecipeBook.getTheRecipeBook(this).getRecipe(mRecipeID);
+        mRecipeSnaps = RecipeBook.getTheRecipeBook(this).getSnaps(mRecipeID);
 
-        mRecipeSnaps = mRecipe.getSnaps();
+        Log.d("TAG  " , "Size:: "+ RecipeBook.getTheRecipeBook(getBaseContext()).getRecipes().size());
+        Log.d("TAG  " , "ID recived:: "+ mRecipeID);
+        Log.d("TAG", "Number of snaps: " + mRecipeSnaps.size());
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-
-        mViewPager.setAdapter(new FragmentStatePagerAdapter(fragmentManager) {
-
-            @Override
-            public Fragment getItem(int position) {
-                //Snap snap = mRecipe.get(position);
-                boolean isCamera = false;
-                Log.d("I'm here", "" + position);
-                Log.d("I'm Here", "" + mRecipeSnaps.size());
-                if(position == mRecipeSnaps.size() - 1)
-                    isCamera = !isCamera; //switch view from a page showing an image into a page showing a camera button
-
-                Log.d("TAG", "creatttttttting");
-                return NewSnapFragment.newInstance(mRecipeSnaps.size() - 1 - position, mRecipeID, isCamera);
-            }
-
-            @Override
-            public int getItemPosition(Object item) {
-                return POSITION_NONE;
-            }
-
-            @Override
-            public int getCount() {
-                return mRecipeSnaps.size();
-            }
-
-        });
+        mAdapter = new RecipeAdapter(fragmentManager);
+        mViewPager.setAdapter(mAdapter);
     }
 
     public void update(){
+        mRecipeSnaps = RecipeBook.getTheRecipeBook(this).getSnaps(mRecipeID);
         mViewPager.getAdapter().notifyDataSetChanged();
+    }
+
+    public class RecipeAdapter extends FragmentStatePagerAdapter {
+        public RecipeAdapter(FragmentManager fm) {
+            super(fm);
+        }
+        @Override
+        public Fragment getItem(int position) {
+            Log.d("I'm here", "" + position);
+            Log.d("I'm Here", "" + mRecipeSnaps.size());
+
+            boolean isCamera = false;
+            if(position == mRecipeSnaps.size() - 1)
+                isCamera = !isCamera; //switch view from a page showing an image into a page showing a camera button
+
+            return NewSnapFragment.newInstance(mRecipeSnaps.size() - 1 - position, mRecipeID, isCamera);
+        }
+
+        @Override
+        public int getItemPosition(Object item) {
+            return POSITION_NONE;
+        }
+
+        @Override
+        public int getCount() {
+            return mRecipeSnaps.size();
+        }
     }
 
 }

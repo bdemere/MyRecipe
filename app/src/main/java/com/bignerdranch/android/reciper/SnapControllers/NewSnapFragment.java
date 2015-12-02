@@ -25,17 +25,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bignerdranch.android.reciper.Comment.EditCommentDialog;
+import com.bignerdranch.android.reciper.Comment.CommentDialog;
+import com.bignerdranch.android.reciper.Models.Comment;
+import com.bignerdranch.android.reciper.Models.Recipe;
+import com.bignerdranch.android.reciper.Models.Snap;
 import com.bignerdranch.android.reciper.PictureUtils;
 import com.bignerdranch.android.reciper.R;
-import com.bignerdranch.android.reciper.data.Comment;
-import com.bignerdranch.android.reciper.data.Recipe;
-import com.bignerdranch.android.reciper.data.RecipeBook;
-import com.bignerdranch.android.reciper.data.Snap;
+import com.bignerdranch.android.reciper.RecipeBook;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ import java.util.UUID;
 /**
  * Created by bubujay on 11/13/15.
  */
-public class NewSnapFragment extends Fragment{
+public class  NewSnapFragment extends Fragment{
 
     final static String SNAP_ID = "com.genius.android.reciper.SNAP_ID";
     final static String RECIPE_ID = "com.genius.android.reciper.RECIPE_ID";
@@ -52,13 +53,20 @@ public class NewSnapFragment extends Fragment{
     final static String COMMENT_DIALOG = "com.genius.android.reciper.COMMENT_DIALOG";
 
     private static final int REQUEST_PHOTO = 0;
+    private static final int REQUEST_COMMENTS = 1;
 
-    //private List<Snap> mRecipe;
-    private Snap mCurrentSnap;
+
+    private ImageView mSnapImage;
+    private Button mRetakeButton;
+    private Button mWrapUpButton;
+    private ImageButton mAddSnapButton;
+    private Bitmap mBackground;
+    private Vibrator mVibrate;
+
+
     private Button mVP;
     private TextView mcoordView;
     private TextView mTitle;
-    private ImageView mSnapImage;
     private Bitmap mSnapBitmap;
     private Button mButtonTemp;
     /* ...on touch variables ... */
@@ -67,21 +75,18 @@ public class NewSnapFragment extends Fragment{
 
     private boolean isShifted = false;
     //private int shiftFactor = 1;
-    private Button mRetakeButton;
-    private Button mWrapUpButton;
 
+    private Snap mCurrentSnap;
+    private ArrayList<Snap> mSnaps;
+    private RecipeBook mTheBook;
     private int snapID;
     private UUID recipeID;
     private Recipe mRecipe;
     private boolean isCamera;
-    public float x;
-    public float y;
-    private Button mAddSnapButton;
-    private Bitmap mBackground;
-    private Vibrator mVibrate;
     private File mPhotoFile;
 
-    //private Bitmap background = ((BitmapDrawable)getResources().getDrawable(R.drawable.kitchen2)).getBitmap();
+    public float x;
+    public float y;
 
     public static NewSnapFragment newInstance(int position, UUID recipeID, boolean isCamera) {
         Bundle args = new Bundle();
@@ -100,35 +105,33 @@ public class NewSnapFragment extends Fragment{
         snapID = (int)getArguments().getSerializable(SNAP_ID);
         recipeID = (UUID)getArguments().getSerializable(RECIPE_ID);
         isCamera = (boolean)getArguments().getSerializable(IS_CAMERA);
-        mRecipe = RecipeBook.getTheRecipeBook(getActivity()).getRecipe(recipeID);
-        mCurrentSnap = mRecipe.getSnap(snapID);
-        mPhotoFile = RecipeBook.getTheRecipeBook(getActivity()).getPhotoFile(mCurrentSnap);
 
-        Log.d("TAG", "mPhotoFile set to snap with id: " + mCurrentSnap.getID());
+        mTheBook = RecipeBook.getTheRecipeBook(getActivity());
+        mRecipe = mTheBook.getRecipe(recipeID);
+        mSnaps = mTheBook.getSnaps(recipeID);
+        mCurrentSnap = mSnaps.get(snapID);
+        //mCurrentSnap.setComments(mTheBook.getComments(mCurrentSnap.getId()));
+
+        mPhotoFile = mTheBook.getPhotoFile(mCurrentSnap);
+
+        Log.d("TAG", "mPhotoFile set to snap with id: " + mCurrentSnap.getId());
         Log.d("TAG", "File name is: " + mCurrentSnap.getPictureFileName());
         Log.d("TAG", "onCreate called!");
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d("TAG", "onCreateView() called");
         View v = inflater.inflate(R.layout.new_recipe_snap, container, false);
 
 
         mSnapImage = (ImageView) v.findViewById(R.id.snap_imageView);
         mRetakeButton = (Button) v.findViewById(R.id.retake_button);
         mWrapUpButton = (Button) v.findViewById(R.id.wrapup_button);
-        mAddSnapButton = (Button) v.findViewById(R.id.add_snap_button);
-
-
+        mAddSnapButton = (ImageButton) v.findViewById(R.id.add_snap_button);
         mSnapImage.setClickable(true);
 
-        Log.d("TAG", "snap being  created with id: " + mCurrentSnap.getID() + " in recipe with ID: " + recipeID + " and isCamera: " + isCamera);
+        Log.d("TAG", "snap being  created with id: " + mCurrentSnap.getId() + " in recipe with ID: " + recipeID + " and isCamera: " + isCamera);
         mBackground = null;
         if(!isCamera) {
             mBackground = PictureUtils.getScaledBitmap(
@@ -147,9 +150,9 @@ public class NewSnapFragment extends Fragment{
 
         if(!isCamera) {
             //Drawable drawable = new BitmapDrawable(getResources(), mBackground);
-            Bitmap tempBackground = getResizedBitmap(RotateBitmap(mBackground, 90), width, height);
-
-            mBackground = drawCommentLocations(tempBackground);
+            //Bitmap tempBackground = getResizedBitmap(RotateBitmap(mBackground, 90), width, height);
+            //mBackground = tempBackground;
+            //mSnapImage.setImageBitmap(tempBackground);
             mSnapImage.setImageBitmap(mBackground);
             //mSnapImage.setScaleType(ImageView.ScaleType.MATRIX);
 
@@ -197,7 +200,7 @@ public class NewSnapFragment extends Fragment{
                 isShifted = !isShifted;
                 hideTimer.start();
 
-                Toast.makeText(getActivity(), "SNAP ID: " + mCurrentSnap.getID(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "SNAP ID: " + mCurrentSnap.getId(), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -222,13 +225,11 @@ public class NewSnapFragment extends Fragment{
                 Log.d("fragment", "you long-touched at x: " + x + " y: " + y);
                 Comment result = mCurrentSnap.searchComments(x,y);
                 if(result == null) {
-                    Toast.makeText(getActivity(), "New Comment", Toast.LENGTH_SHORT).show();
                     Bitmap tick = BitmapFactory.decodeResource(getResources(), R.drawable.commentn);
                     mSnapImage.setImageBitmap(overlayBitmapToxy(mBackground, getResizedBitmap(tick, 100, 100), x, y));
-                }else{
-                    Toast.makeText(getActivity(), "Adding comment", Toast.LENGTH_SHORT).show();
                 }
-                EditCommentDialog dialog = EditCommentDialog.newInstance(x, y, snapID);
+                CommentDialog dialog = CommentDialog.newInstance(x, y, snapID, recipeID);
+                dialog.setTargetFragment(NewSnapFragment.this, REQUEST_COMMENTS);
                 dialog.show(getFragmentManager(), "comment at xy");
                 return false;
             }
@@ -251,7 +252,6 @@ public class NewSnapFragment extends Fragment{
             }
         });
 
-
         //updatePhotoView();
         return v;
     }
@@ -260,6 +260,12 @@ public class NewSnapFragment extends Fragment{
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode != Activity.RESULT_OK) {
             return;
+        }
+
+        if(resultCode != REQUEST_COMMENTS) {
+            Log.d("TAG", "onActivityResult: REQUEST_COMMENTS");
+            mSnaps = mTheBook.getSnaps(recipeID);
+            mCurrentSnap = mSnaps.get(snapID);
         }
 
         if(requestCode == REQUEST_PHOTO) {
@@ -317,23 +323,12 @@ public class NewSnapFragment extends Fragment{
         return px;
     }
 
-    public Bitmap drawCommentLocations(Bitmap bitmap){
-        Bitmap tick = BitmapFactory.decodeResource(getResources(), R.drawable.commentn);
-        Bitmap smallTick =  getResizedBitmap(tick, 100, 100);
-        if(mCurrentSnap.hasComments()) {
-            ArrayList<Comment> currentSnapComments = mCurrentSnap.getComments();
-            for (Comment comment : currentSnapComments) {
-                Bitmap tempBitmap = overlayBitmapToxy(bitmap, smallTick, comment.getX(), comment.getY());
-                bitmap = tempBitmap;
-            }
-        }
-        return bitmap;
-    }
-
     private void updatePhotoView() {
         //RecipeBook.getTheRecipeBook(getActivity()).getLatestRecipe().newSnap();
-        Snap newSnap = RecipeBook.getTheRecipeBook(getActivity()).getRecipe(recipeID).newSnap();
-        Log.d("TAG", "newSnap created with id: " + newSnap.getID() + " in recipe with ID: "+ recipeID);
+        Snap snap = Recipe.newSnap(recipeID); //add a dummy snap
+        mTheBook.addSnap(snap);
+
+        Log.d("TAG", "newSnap created with id: " + snap.getId() + " in recipe with ID: "+ recipeID);
         ((NewRecipeSnapPagerActivity) getActivity()).update();
 
 

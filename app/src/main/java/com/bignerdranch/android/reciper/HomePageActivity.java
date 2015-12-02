@@ -1,17 +1,18 @@
 package com.bignerdranch.android.reciper;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 
 public class HomePageActivity extends SingleFragmentActivity {
 
-    /*private static final String SNAP_ID =
-            "com.bignerdranch.android.criminalintent.crime_id";*/
-
-    /*public static Intent newIntent(Context packageContext, UUID crimeId) {
-        Intent intent = new Intent(packageContext, HomePageActivity.class);
-        intent.putExtra(SNAP_ID, crimeId);
-        return intent;
-    }*/
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setLogo(R.mipmap.ic_launcher);
+        actionBar.setDisplayUseLogoEnabled(true);
+    }
 
     @Override
     protected Fragment createFragment() {

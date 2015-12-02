@@ -54,14 +54,14 @@ public class Snap {
         int side = 175;
         Log.d("TAG", "Number of comments: " + mComments.size());
         for(Comment comment : mComments){
-            /*if((int)comment.getX() / side == (int)x / side
+            if((int)comment.getX() / side == (int)x / side
                     && (int)comment.getY() / side == (int)y / side)
-                return comment;*/
-            Log.d("TAG", "Diff X: " + Math.abs((int)comment.getX() - (int)x));
+                return comment;
+            /*Log.d("TAG", "Diff X: " + Math.abs((int)comment.getX() - (int)x));
             Log.d("TAG", "Diff Y: " + Math.abs((int)comment.getY() - (int)y));
             if((Math.abs((int)comment.getX() - (int)x) < side)
                     && (Math.abs((int)comment.getY() - (int)y) < side))
-                return comment;
+                return comment;*/
         }
         return null;
     }

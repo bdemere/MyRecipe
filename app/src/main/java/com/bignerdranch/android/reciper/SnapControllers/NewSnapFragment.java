@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,7 +60,7 @@ public class NewSnapFragment extends Fragment{
     private ImageView mSnapImage;
     private Button mRetakeButton;
     private Button mWrapUpButton;
-    private Button mAddSnapButton;
+    private ImageButton mAddSnapButton;
     private Bitmap mBackground;
     private Vibrator mVibrate;
 
@@ -128,7 +129,7 @@ public class NewSnapFragment extends Fragment{
         mSnapImage = (ImageView) v.findViewById(R.id.snap_imageView);
         mRetakeButton = (Button) v.findViewById(R.id.retake_button);
         mWrapUpButton = (Button) v.findViewById(R.id.wrapup_button);
-        mAddSnapButton = (Button) v.findViewById(R.id.add_snap_button);
+        mAddSnapButton = (ImageButton) v.findViewById(R.id.add_snap_button);
         mSnapImage.setClickable(true);
 
         Log.d("TAG", "snap being  created with id: " + mCurrentSnap.getId() + " in recipe with ID: " + recipeID + " and isCamera: " + isCamera);

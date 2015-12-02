@@ -33,8 +33,7 @@
                     android:layout_height="wrap_content"
                     android:text="Chicken Tikka Masala"
                     android:paddingLeft="8dp"
-                    android:textStyle="bold"
-                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+                    android:textAppearance="?android:attr/textAppearanceLarge"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -48,31 +47,63 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginLeft="4dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-
                 android:layout_marginBottom="16dp">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:id="@+id/button1"
-                    android:layout_gravity="left|top"
-                    android:text="Type: Side-dish"
-                    android:layout_columnWeight="1"/>
+                    android:orientation="horizontal"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="left|top">
 
-                <TextView
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/dish"
+                        android:layout_marginRight="8dp"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:id="@+id/button1"
+                        android:text="Side-dish"
+                        android:textSize="18dp"
+                        android:layout_gravity="center"
+                        />
+                    
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:id="@+id/button2"
-                    android:layout_gravity="left|top"
-                    android:text="Total-time: 30min" />
+                    android:layout_weight="0.75"
+                    android:orientation="horizontal"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="left|top">
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/time"
+                        android:layout_marginRight="8dp"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:id="@+id/button2"
+                        android:text="30 min"
+                        android:textSize="18dp"
+                        android:layout_gravity="center" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -82,22 +113,54 @@
                 android:orientation="horizontal"
                 android:layout_marginBottom="16dp">
 
-                <TextView
+
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:id="@+id/button3"
-                    android:layout_gravity="left|top"
-                    android:text="Level: intermediate" />
+                    android:orientation="horizontal"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="left|top">
 
-                <TextView
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/level"
+                        android:layout_marginRight="8dp"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:id="@+id/button4"
+                        android:textSize="18dp"
+                        android:text="Intermediate"
+                        android:layout_gravity="center"/>
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:id="@+id/button4"
-                    android:layout_gravity="left|top"
-                    android:text="Deliciousness: yummy" />
+                    android:layout_weight="0.75"
+                    android:orientation="horizontal"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="left|top">
 
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/serving"
+                        android:layout_marginRight="8dp"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:id="@+id/button3"
+                        android:text="10"
+                        android:textSize="18dp"
+                        android:layout_gravity="center"/>
+                </LinearLayout>
             </LinearLayout>
 
 
@@ -105,8 +168,8 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/snap_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
         </android.support.v7.widget.RecyclerView>
 
     </LinearLayout>

@@ -5,4 +5,16 @@
     <string name="test">Praise God!</string>
     <string name="action_settings">Settings</string>
     <string name="image_content_description">Show picture of a snap</string>
+    <string name="country_prompt">Choose a category</string>
+    <string-array name="country_arrays">
+        <item>Dessert</item>
+        <item>Appetizer</item>
+        <item>Salad</item>
+        <item>Baked</item>
+        <item>Snack</item>
+        <item>Salad</item>
+        <item>Sauce/Topping</item>
+        <item>Side Dish</item>
+        <item>Drink</item>
+    </string-array>
 </resources>

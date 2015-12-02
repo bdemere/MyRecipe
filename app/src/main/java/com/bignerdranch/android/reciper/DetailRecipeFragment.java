@@ -87,8 +87,8 @@ public class DetailRecipeFragment extends Fragment {
                 mItemImageView.setImageDrawable(null);
             } else {
                 Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
-                //Bitmap tempBitmap = getResizedBitmap(RotateBitmap(bitmap, 90), 600, 1000);
-                //bitmap = tempBitmap;
+                Bitmap tempBitmap = getResizedBitmap(bitmap, 600, 1000);
+                bitmap = tempBitmap;
                 mItemImageView.setImageBitmap(bitmap);
             }
 

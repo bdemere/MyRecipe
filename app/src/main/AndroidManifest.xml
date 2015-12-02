@@ -30,6 +30,7 @@
         </activity>
 
         <activity android:name=".SplashActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
             <intent-filter>
@@ -40,19 +41,24 @@
 
         <activity
             android:name=".RecipeListActivity"
-            android:parentActivityName=".HomePageActivity">
-            android:label = "Recipe List"></activity>
+            android:label="Recipes"
+            android:parentActivityName=".HomePageActivity"></activity>
 
         <activity android:name=".SnapControllers.SnapPagerActivity"
+            android:screenOrientation="portrait"
             android:label = "Snap SlideShow"></activity>
 
         <activity android:name=".SnapControllers.NewRecipeSnapPagerActivity"
+            android:screenOrientation="portrait"
             android:label = "New Recipe Snaps"></activity>
 
         <activity android:name=".DetailRecipeActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName=".RecipeListActivity"
-            android:label = "RecipeDetail">
-            </activity>
+            android:label = "RecipeDetail"></activity>
+
+        <activity android:name=".RecipeInfoFormActivity"
+            android:label = "Info"></activity>
         
 
     </application>

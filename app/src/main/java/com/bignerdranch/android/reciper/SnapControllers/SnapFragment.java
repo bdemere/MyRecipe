@@ -116,11 +116,11 @@ public class SnapFragment extends Fragment{
         int height = size.y;
 
         //mSnapImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-        mSnapImage.setImageDrawable(drawable);
-        //Bitmap tempBitmap = getResizedBitmap(RotateBitmap(bitmap, 90), width, height);
-        //bitmap = drawCommentLocations(tempBitmap);
-        bitmap = drawCommentLocations(bitmap);
+        //Drawable drawable = new BitmapDrawable(getResources(), bitmap);
+        //mSnapImage.setImageDrawable(drawable);
+        Bitmap tempBitmap = getResizedBitmap(RotateBitmap(bitmap, 90), width, height);
+        bitmap = drawCommentLocations(tempBitmap);
+        //bitmap = drawCommentLocations(bitmap);
         mSnapImage.setImageBitmap(bitmap);
         //mSnapImage.setImageBitmap(bitmap);
 
@@ -161,7 +161,7 @@ public class SnapFragment extends Fragment{
             }
         }.start();
 
-        mSnapImage.setOnClickListener(new View.OnClickListener() {
+        /*mSnapImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("mSnapImage", ": short Pressed");
@@ -178,7 +178,7 @@ public class SnapFragment extends Fragment{
                 isShifted = !isShifted;
                 hideTimer.start();
             }
-        });
+        });*/
 
         mSnapImage.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {

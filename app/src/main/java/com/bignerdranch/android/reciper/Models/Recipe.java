@@ -13,6 +13,11 @@ public class Recipe {
     private String mRecipeTitle;
     private Date mDate;
     private UUID ID;
+    private String mCategory;
+    private String mServings;
+    private String mTags;
+    private long mDuration;
+    private String mDifficulty;
     private ArrayList<Snap> mSnaps = new ArrayList<>();
 
     public Recipe(){
@@ -24,6 +29,49 @@ public class Recipe {
         Snap dummySnap = new Snap(ID);
         mSnaps.add(dummySnap);
         mDate = new Date();
+        mCategory = "Other";
+        mServings = "N/A";
+        mTags = "N/A";
+        mDifficulty = "Intermediate";
+    }
+
+    public void setDifficulty(String difficulty) {
+        this.mDifficulty = difficulty;
+    }
+
+    public String getDifficulty() {
+        return mDifficulty;
+    }
+    public String getCategory() {
+        return mCategory;
+    }
+
+    public void setCategory(String mCategory) {
+        this.mCategory = mCategory;
+    }
+
+    public long getDuration() {
+        return mDuration;
+    }
+
+    public void setDuration(long duration) {
+        this.mDuration = duration;
+    }
+
+    public String getServings() {
+        return mServings;
+    }
+
+    public void setServings(String mServings) {
+        this.mServings = mServings;
+    }
+
+    public String getTags() {
+        return mTags;
+    }
+
+    public void setTags(String mTags) {
+        this.mTags = mTags;
     }
 
     public Date getDate() {

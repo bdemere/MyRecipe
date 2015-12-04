@@ -26,10 +26,20 @@ public class RecipeCursorWrapper extends CursorWrapper{
         String uuidString = getString(getColumnIndex(RecipeTable.Cols.UUID));
         String title = getString(getColumnIndex(RecipeTable.Cols.TITLE));
         long date = getLong(getColumnIndex(RecipeTable.Cols.DATE));
+        String category = getString(getColumnIndex(RecipeTable.Cols.CATEGORY));
+        String servings = getString(getColumnIndex(RecipeTable.Cols.SERVINGS));
+        String tags = getString(getColumnIndex(RecipeTable.Cols.TAGS));
+        long duration = getLong(getColumnIndex(RecipeTable.Cols.DURATION));
+        String difficulty = getString(getColumnIndex(RecipeTable.Cols.DIFFICULTY));
 
         Recipe recipe = new Recipe(UUID.fromString(uuidString));
         recipe.setTitle(title);
         recipe.setDate(new Date(date));
+        recipe.setCategory(category);
+        recipe.setServings(servings);
+        recipe.setTags(tags);
+        recipe.setDuration(duration);
+        recipe.setDifficulty(difficulty);
 
         return recipe;
     }

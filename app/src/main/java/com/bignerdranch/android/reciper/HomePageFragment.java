@@ -59,7 +59,7 @@ public class HomePageFragment extends Fragment {
                 // Add a dummy snap to the recipe for the 'Add snap' page
                 Snap snap = Recipe.newSnap(recipe.getID());
                 mTheBook.addSnap(snap);
-
+                Timer.getTimer(getActivity()).start();
                 Intent intent = NewRecipeSnapPagerActivity.newIntent(getActivity(), recipe.getID());
                 startActivity(intent);
             }

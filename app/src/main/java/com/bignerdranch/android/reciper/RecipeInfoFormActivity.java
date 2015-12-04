@@ -14,10 +14,13 @@ import java.util.UUID;
 public class RecipeInfoFormActivity extends SingleFragmentActivity {
     private static final String EXTRA_RECIPE_ID =
             "com.genius.android.reciper.Detail.Recipe_id";
+    private static final String IS_NEW_RECIPE =
+            "com.genius.android.reciper.Detail.Is_new";
 
-    public static Intent newIntent(Context packageContext, UUID recipeID){
+    public static Intent newIntent(Context packageContext, UUID recipeID, boolean isNew){
         Intent intent = new Intent(packageContext, RecipeInfoFormActivity.class);
         intent.putExtra(EXTRA_RECIPE_ID, recipeID);
+        intent.putExtra(IS_NEW_RECIPE, isNew);
         return intent;
     }
 
@@ -29,7 +32,8 @@ public class RecipeInfoFormActivity extends SingleFragmentActivity {
     @Override
     protected Fragment createFragment() {
         UUID recipeId = (UUID)getIntent().getSerializableExtra(EXTRA_RECIPE_ID);
-        return RecipeInfoFormFragment.newInstance(recipeId);
+        boolean isNew = (boolean) getIntent().getSerializableExtra(IS_NEW_RECIPE);
+        return RecipeInfoFormFragment.newInstance(recipeId, isNew);
     }
 
 }

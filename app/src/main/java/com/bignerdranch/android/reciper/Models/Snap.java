@@ -51,7 +51,7 @@ public class Snap {
     }
 
     public Comment searchComments(float x, float y){
-        int side = 175;
+        int side = 260;
         Log.d("TAG", "Number of comments: " + mComments.size());
         for(Comment comment : mComments){
             if((int)comment.getX() / side == (int)x / side

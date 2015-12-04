@@ -55,7 +55,7 @@
         <activity android:name=".DetailRecipeActivity"
             android:screenOrientation="portrait"
             android:parentActivityName=".RecipeListActivity"
-            android:label = "RecipeDetail"></activity>
+            android:label = "Detail"></activity>
 
         <activity android:name=".RecipeInfoFormActivity"
             android:label = "Info"></activity>

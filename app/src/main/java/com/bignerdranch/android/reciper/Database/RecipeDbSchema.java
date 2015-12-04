@@ -11,6 +11,11 @@ public class RecipeDbSchema {
             public static final String UUID = "uuid";
             public static final String TITLE = "title";
             public static final String DATE = "date";
+            public static final String CATEGORY = "category";
+            public static final String SERVINGS = "servings";
+            public static final String TAGS = "tags";
+            public static final String DURATION = "duration";
+            public static final String DIFFICULTY = "difficulty";
         }
     }
 }

@@ -4,13 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.bignerdranch.android.reciper.SnapControllers.SnapPagerActivity;
+
+import java.util.UUID;
+
 public class MainActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.blank);
-        Intent i = SnapPagerActivity.newIntent(MainActivity.this, 0);
+        UUID a = new UUID(234,342);
+        Intent i = SnapPagerActivity.newIntent(MainActivity.this, a, 2);
         startActivity(i);
     }
 }

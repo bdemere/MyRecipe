@@ -3,17 +3,21 @@ package com.bignerdranch.android.reciper.Comment;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.bignerdranch.android.reciper.Models.Comment;
@@ -42,7 +46,7 @@ public class CommentDialog extends DialogFragment {
     private RecipeBook mTheBook;
     private Recipe mRecipe;
     private ArrayList<Snap> mSnaps;
-    private ImageButton mSaveButton;
+    private Button mAddButton;
     private Snap mCurrentSnap;
     public CommentDialog(){
     }
@@ -78,7 +82,12 @@ public class CommentDialog extends DialogFragment {
     public void onResume(){
         super.onResume();
         Window window = getDialog().getWindow();
-        window.setLayout(1000, 600);
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = size.y;
+        window.setLayout((3*width)/4,height/4);
         window.setGravity(Gravity.CENTER);
         window.setGravity(Gravity.CENTER);
     }
@@ -86,7 +95,7 @@ public class CommentDialog extends DialogFragment {
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
-
+        sendResult(Activity.RESULT_OK);
     }
 
     @Nullable
@@ -94,19 +103,39 @@ public class CommentDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.comment_dialog_fragment, container);        Window window = getDialog().getWindow();
+        View view = inflater.inflate(R.layout.comment_dialog_fragment, container);
+        Window window = getDialog().getWindow();
         window.requestFeature(Window.FEATURE_NO_TITLE);
         mComment = (EditText) view.findViewById(R.id.xy_comment);
-        mSaveButton = (ImageButton) view.findViewById(R.id.comment_add_button);
-        mSaveButton.setOnClickListener(new View.OnClickListener() {
+        mComment.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(mComment.getText().toString().length() != 0)
+                    mAddButton.setEnabled(true);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        mAddButton = (Button) view.findViewById(R.id.add_comment_button);
+        mAddButton.setEnabled(false);
+        mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Dialog", mComment.getText().toString());
-                //Snap latestSnap = RecipeBook.getTheRecipeBook(getContext()).getLatestRecipe().getSnap(snapPos);
-                Snap latestSnap = mCurrentSnap;
-                Comment result = latestSnap.searchComments(mX, mY);
+                String theComment = mComment.getText().toString();
+                Log.d("Dialog", theComment);
+                if(theComment.length() != 0) {
+                    //Snap latestSnap = RecipeBook.getTheRecipeBook(getContext()).getLatestRecipe().getSnap(snapPos);
+                    Snap latestSnap = mCurrentSnap;
+                    Comment result = latestSnap.searchComments(mX, mY);
 
-                if(result == null) {
                     Toast.makeText(getActivity(), "New Comment", Toast.LENGTH_SHORT).show();
                     Comment comment = latestSnap.newComment(mCurrentSnap.getId());
                     comment.setX(mX);
@@ -114,14 +143,10 @@ public class CommentDialog extends DialogFragment {
                     mTheBook.addComment(comment);
                     //Comment newestComment = latestSnap.getLatestComment();
                     //comment.addTextComment(mComment.getText().toString());
-                    mTheBook.addCommentText(mComment.getText().toString(), comment);
-
-                } else {
-                    mTheBook.addCommentText(mComment.getText().toString(), result);
-                    //result.addTextComment(mComment.getText().toString());
-                    Toast.makeText(getActivity(), "Adding a comment", Toast.LENGTH_SHORT).show();
+                    mTheBook.addCommentText(theComment, comment);
                 }
                 sendResult(Activity.RESULT_OK);
+                dismiss();
 
             }
         });

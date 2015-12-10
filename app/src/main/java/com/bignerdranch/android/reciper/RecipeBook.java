@@ -234,6 +234,12 @@ public class RecipeBook {
         values.put(RecipeTable.Cols.UUID, recipe.getID().toString());
         values.put(RecipeTable.Cols.TITLE, recipe.getTitle());
         values.put(RecipeTable.Cols.DATE, recipe.getDate().getTime());
+        values.put(RecipeTable.Cols.CATEGORY, recipe.getCategory());
+        values.put(RecipeTable.Cols.SERVINGS, recipe.getServings());
+        values.put(RecipeTable.Cols.TAGS, recipe.getTags());
+        values.put(RecipeTable.Cols.DURATION, recipe.getDuration());
+        values.put(RecipeTable.Cols.DIFFICULTY, recipe.getDifficulty());
+
         return values;
     }
 

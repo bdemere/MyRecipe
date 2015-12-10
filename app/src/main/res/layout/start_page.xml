@@ -24,7 +24,8 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:text="New Recipe"
-            android:textColor="#FFFFFF"
+            android:textColor="#5c7448"
+            android:textStyle="bold"
             android:background="@drawable/just_borders"
             android:id="@+id/new_recipe_button"
             android:textSize="18dp"
@@ -37,13 +38,15 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:text="Saved recipes"
+            android:textStyle="bold"
             android:id="@+id/all_recipes_button"
             android:background="@drawable/just_borders"
-            android:textColor="#FFFFFF"
+            android:textColor="#5c7448"
             android:textSize="18dp"
             android:layout_gravity="center"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
+
             />
     </LinearLayout>
 </RelativeLayout>

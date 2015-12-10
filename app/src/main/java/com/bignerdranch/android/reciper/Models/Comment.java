@@ -75,6 +75,12 @@ public class Comment {
         setCommentsText(encode(list));
     }
 
+    public void editTextComment(int position, String text) {
+        ArrayList<String> list = getCommentsList();
+        list.set(position,text);
+        setCommentsText(encode(list));
+    }
+
     public ArrayList<String> getCommentsList(){
         return decode(commentsText);
     }
@@ -89,7 +95,7 @@ public class Comment {
 
     public static ArrayList<String> decode(String textComment) {
         String[] decoded = textComment.split("`");
-        return new ArrayList<String>(Arrays.asList(decoded));
+        return new ArrayList(Arrays.asList(decoded));
     }
 
 }

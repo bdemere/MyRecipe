@@ -8,10 +8,16 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bignerdranch.android.reciper.SnapControllers.SnapPagerActivity;
 import com.bignerdranch.android.reciper.Models.Recipe;
@@ -20,6 +26,7 @@ import com.bignerdranch.android.reciper.Models.Snap;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -32,6 +39,14 @@ public class DetailRecipeFragment extends Fragment {
     private ArrayList<Snap> mSnaps;
     private UUID mRecipeID;
     private RecyclerView mPhotoRecyclerView;
+    private ImageView mRecipeProfile;
+
+    private TextView mTitle;
+    private TextView mDate;
+    private TextView mCategory;
+    private TextView mDuration;
+    private TextView mLevel;
+    private TextView mServings;
 
     public static DetailRecipeFragment newInstance(UUID RecipeID) {
         Bundle args = new Bundle();
@@ -46,15 +61,48 @@ public class DetailRecipeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mRecipeID = (UUID)getArguments().getSerializable(RECIPE_ID);
         mRecipe = RecipeBook.getTheRecipeBook(getActivity()).getRecipe(mRecipeID);
-        //mSnaps = mRecipe.getSnaps();
         mSnaps = RecipeBook.getTheRecipeBook(getActivity()).getSnaps(mRecipeID);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_detail, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
+        switch (item.getItemId()) {
+            case R.id.menu_item_delete_recipe:
+                RecipeBook.getTheRecipeBook(getActivity()).deleteRecipes(mRecipe);
+                 intent = new Intent(getActivity(), RecipeListActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                getActivity().finish();
+                return true;
+            case R.id.menu_item_edit_recipe:
+                intent = RecipeInfoFormActivity.newIntent(getActivity(), mRecipe.getID(), false);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.recipe_detail_page, container, false);
 
+        mTitle = (TextView) v.findViewById(R.id.title_text_view);
+        mDate = (TextView) v.findViewById(R.id.date_text_view);
+        mCategory = (TextView) v.findViewById(R.id.category_text_view);
+        mDuration = (TextView) v.findViewById(R.id.duration_text_view);
+        mLevel = (TextView) v.findViewById(R.id.level_text_view);
+        mServings = (TextView) v.findViewById(R.id.servings_text_view);
         mPhotoRecyclerView = (RecyclerView) v.findViewById(R.id.snap_recycler_view);
+        mRecipeProfile = (ImageView) v.findViewById(R.id.recipe_profile_image);
 
         LinearLayoutManager layoutManager;
         if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -63,7 +111,22 @@ public class DetailRecipeFragment extends Fragment {
             layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         }
 
+        DateFormat f = SimpleDateFormat.getDateInstance();
+
+        mTitle.setText(mRecipe.getTitle());
+        mDate.setText(f.format(mRecipe.getDate()));
+        mCategory.setText(mRecipe.getCategory());
+        mDuration.setText(mRecipe.getDuration() + " min");
+        mLevel.setText(mRecipe.getDifficulty());
+        mServings.setText(mRecipe.getServings());
+
         mPhotoRecyclerView.setLayoutManager(layoutManager);
+
+        if(mSnaps.size() > 1) {
+            File mPhotoFile = RecipeBook.getTheRecipeBook(getActivity()).getPhotoFile(mSnaps.get(1));
+            Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
+            mRecipeProfile.setImageBitmap(RotateBitmap(bitmap,90));
+        }
         updateUI();
         return v;
     }
@@ -87,8 +150,8 @@ public class DetailRecipeFragment extends Fragment {
                 mItemImageView.setImageDrawable(null);
             } else {
                 Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
-                //Bitmap tempBitmap = getResizedBitmap(RotateBitmap(bitmap, 90), 600, 1000);
-                //bitmap = tempBitmap;
+                Bitmap tempBitmap = getResizedBitmap(RotateBitmap(bitmap, 90), 600, 1000);
+                bitmap = tempBitmap;
                 mItemImageView.setImageBitmap(bitmap);
             }
 

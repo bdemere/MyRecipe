@@ -18,6 +18,4 @@
         <!-- Support library compatibility -->
         <item name="background">@drawable/color_5c7448</item>
     </style>
-
-
 </resources>

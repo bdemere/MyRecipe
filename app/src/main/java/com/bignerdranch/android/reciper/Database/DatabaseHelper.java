@@ -21,7 +21,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     " _id integer primary key autoincrement, " +
                     RecipeTable.Cols.UUID + ", " +
                     RecipeTable.Cols.TITLE + ", " +
-                    RecipeTable.Cols.DATE +
+                    RecipeTable.Cols.DATE + ", " +
+                    RecipeTable.Cols.CATEGORY + ", " +
+                    RecipeTable.Cols.SERVINGS + ", " +
+                    RecipeTable.Cols.TAGS + ", " +
+                    RecipeTable.Cols.DIFFICULTY + ", " +
+                    RecipeTable.Cols.DURATION +
                     ")";
 
     private static final String CREATE_TABLE_SNAP =

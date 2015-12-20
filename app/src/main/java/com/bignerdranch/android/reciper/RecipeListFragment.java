@@ -2,6 +2,7 @@ package com.bignerdranch.android.reciper;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,7 +17,6 @@ import android.widget.TextView;
 
 import com.bignerdranch.android.reciper.Models.Recipe;
 import com.bignerdranch.android.reciper.Models.Snap;
-import com.bignerdranch.android.reciper.RecipeBook;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -74,7 +74,7 @@ public class RecipeListFragment extends Fragment {
 
             if(mSnaps.size() > 1) {
                 File mPhotoFile = RecipeBook.getTheRecipeBook(getActivity()).getPhotoFile(mSnaps.get(1));
-                Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
+                Bitmap bitmap = BitmapFactory.decodeFile(mPhotoFile.getPath());
                 mImageView.setImageBitmap(RotateBitmap(bitmap,90));
             }
         }

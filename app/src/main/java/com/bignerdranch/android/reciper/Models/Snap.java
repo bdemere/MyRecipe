@@ -108,17 +108,4 @@ public class Snap {
         this.mPicture = mPicture;
     }
 
-    //Temporary
-
-    private ArrayList<Ingredient> mIngredients = new ArrayList<>();
-
-    public void addIngredient(Ingredient i){
-        mIngredients.add(i);
-    }
-
-    public ArrayList<Ingredient> getIngredientList(){
-        return mIngredients;
-    }
-
-
 }

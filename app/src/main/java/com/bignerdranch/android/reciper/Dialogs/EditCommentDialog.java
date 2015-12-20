@@ -1,4 +1,4 @@
-package com.bignerdranch.android.reciper.Comment;
+package com.bignerdranch.android.reciper.Dialogs;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -7,6 +7,8 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -27,16 +29,21 @@ import com.bignerdranch.android.reciper.R;
 import com.bignerdranch.android.reciper.RecipeBook;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
  * Created by bubujay on 11/18/15.
  */
-public class CommentDialog extends DialogFragment {
+public class EditCommentDialog extends DialogFragment {
     final static String POSITION_X = "com.genius.android.reciper.CommentDialog.POSITION_X";
     final static String POSITION_Y = "com.genius.android.reciper.CommentDialog.POSITION_Y";
     final static String SNAP_POSITION = "com.genius.android.reciper.CommentDialog.SNAP_POSITION";
     final static String RECIPE_ID = "com.genius.android.reciper.RECIPE_ID";
+
+    private RecyclerView mCommentRecyclerView;
+    private RecipeAdapter mAdapter;
+    private Comment comment;
 
     private EditText mComment;
     private float mX;
@@ -48,16 +55,16 @@ public class CommentDialog extends DialogFragment {
     private ArrayList<Snap> mSnaps;
     private Button mAddButton;
     private Snap mCurrentSnap;
-    public CommentDialog(){
+    public EditCommentDialog(){
     }
 
-    public static CommentDialog newInstance(float positionX, float positionY, int snapPosition, UUID recipeId){
+    public static EditCommentDialog newInstance(float positionX, float positionY, int snapPosition, UUID recipeId){
         Bundle args = new Bundle();
         args.putSerializable(POSITION_X, positionX);
         args.putSerializable(POSITION_Y, positionY);
         args.putSerializable(SNAP_POSITION, snapPosition);
         args.putSerializable(RECIPE_ID, recipeId);
-        CommentDialog fragment = new CommentDialog();
+        EditCommentDialog fragment = new EditCommentDialog();
         fragment.setArguments(args);
         return fragment;
     }
@@ -73,7 +80,7 @@ public class CommentDialog extends DialogFragment {
         mRecipe = mTheBook.getRecipe(recipeID);
         mSnaps = mTheBook.getSnaps(recipeID);
         mCurrentSnap = mSnaps.get(snapPos);
-
+        comment = mCurrentSnap.searchComments(mX, mY);
         super.onCreate(savedInstanceState);
 
     }
@@ -87,7 +94,7 @@ public class CommentDialog extends DialogFragment {
         display.getSize(size);
         int width = size.x;
         int height = size.y;
-        window.setLayout((3*width)/4,height/4);
+        window.setLayout((3*width)/4,(int)(height/2.8));
         window.setGravity(Gravity.CENTER);
         window.setGravity(Gravity.CENTER);
     }
@@ -103,9 +110,10 @@ public class CommentDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.comment_dialog_fragment, container);
+        View view = inflater.inflate(R.layout.edit_dialog_fragment, container);
         Window window = getDialog().getWindow();
         window.requestFeature(Window.FEATURE_NO_TITLE);
+
         mComment = (EditText) view.findViewById(R.id.xy_comment);
         mComment.addTextChangedListener(new TextWatcher() {
             @Override
@@ -129,30 +137,99 @@ public class CommentDialog extends DialogFragment {
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String theComment = mComment.getText().toString();
-                Log.d("Dialog", theComment);
-                if(theComment.length() != 0) {
-                    //Snap latestSnap = RecipeBook.getTheRecipeBook(getContext()).getLatestRecipe().getSnap(snapPos);
-                    Snap latestSnap = mCurrentSnap;
-                    Comment result = latestSnap.searchComments(mX, mY);
+                Log.d("Dialog", mComment.getText().toString());
+                //Snap latestSnap = RecipeBook.getTheRecipeBook(getContext()).getLatestRecipe().getSnap(snapPos);
+                Snap latestSnap = mCurrentSnap;
+                Comment result = latestSnap.searchComments(mX, mY);
 
-                    Toast.makeText(getActivity(), "New Comment", Toast.LENGTH_SHORT).show();
-                    Comment comment = latestSnap.newComment(mCurrentSnap.getId());
-                    comment.setX(mX);
-                    comment.setY(mY);
-                    mTheBook.addComment(comment);
-                    //Comment newestComment = latestSnap.getLatestComment();
-                    //comment.addTextComment(mComment.getText().toString());
-                    mTheBook.addCommentText(theComment, comment);
-                }
+                mTheBook.addCommentText(mComment.getText().toString(), result);
+                //result.addTextComment(mComment.getText().toString());
+                Toast.makeText(getActivity(), "Adding a comment", Toast.LENGTH_SHORT).show();
+
                 sendResult(Activity.RESULT_OK);
                 dismiss();
 
             }
         });
 
+        mCommentRecyclerView = (RecyclerView)view.findViewById(R.id.edit_dialog_recycler_view);
+        mCommentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        updateUI();
         return view;
+    }
+
+    private class RecipeHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener {
+
+        private EditText aComment;
+        public RecipeHolder(View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(this);
+            aComment = (EditText) itemView.findViewById(R.id.edit_list_item_comment_text_view);
+        }
+
+        public void bindRecipe(String tComment, final int position) {
+            aComment.setText(tComment);
+            aComment.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    comment.editTextComment(position, aComment.getText().toString());
+                    mTheBook.updateComment(comment);
+                    mAddButton.setEnabled(true);
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
+        }
+
+        @Override
+        public void onClick(View v) {
+            Log.d("comment List", "clicked a comment ");
+        }
+    }
+
+    private class RecipeAdapter extends RecyclerView.Adapter<RecipeHolder> {
+
+        private List<String> textComments;
+
+        public RecipeAdapter(List<String> tComments) {
+            textComments = tComments;
+            Log.d("TAG", "Number of comments: " + textComments.size());
+        }
+
+        @Override
+        public RecipeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+            View view = layoutInflater.inflate(R.layout.edit_comment_item_recipe, parent, false);
+            return new RecipeHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(RecipeHolder holder, int position) {
+            String tComment = textComments.get(position);
+            Log.d("recycler", "" + position);
+            holder.bindRecipe(tComment,position);
+        }
+
+        @Override
+        public int getItemCount() {
+            return textComments.size();
+        }
+    }
+
+    private void updateUI(){
+        List<String> comments = comment.getCommentsList();
+        mAdapter = new RecipeAdapter(comments);
+        mCommentRecyclerView.setAdapter(mAdapter);
     }
 
     private void sendResult(int resultCode) {

@@ -1,11 +1,17 @@
 package com.bignerdranch.android.reciper;
 
 import android.content.Intent;
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
+
+/**
+ *  A class controlling the splash screen(activity)
+ *
+ *  @author Basileal Imana, Bemnet Demere and Maria Dyane
+ *  @version 1.0
+ *  @since 11/22/15.
+ */
 
 public class SplashActivity extends AppCompatActivity {
 

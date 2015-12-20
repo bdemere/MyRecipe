@@ -1,5 +1,7 @@
 package com.bignerdranch.android.reciper.Models;
 
+import com.bignerdranch.android.reciper.R;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
@@ -107,7 +109,4 @@ public class Recipe {
         //newSnap.setPicture(R.drawable.burger); // temporary
         return newSnap;
     }
-
-
-
 }

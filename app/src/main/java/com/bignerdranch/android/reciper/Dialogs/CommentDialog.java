@@ -1,4 +1,4 @@
-package com.bignerdranch.android.reciper.Comment;
+package com.bignerdranch.android.reciper.Dialogs;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -18,8 +18,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
-import com.bignerdranch.android.reciper.Models.Ingredient;
+import com.bignerdranch.android.reciper.Models.Comment;
 import com.bignerdranch.android.reciper.Models.Recipe;
 import com.bignerdranch.android.reciper.Models.Snap;
 import com.bignerdranch.android.reciper.R;
@@ -31,13 +32,13 @@ import java.util.UUID;
 /**
  * Created by bubujay on 11/18/15.
  */
-public class IngredientDialog extends DialogFragment {
+public class CommentDialog extends DialogFragment {
     final static String POSITION_X = "com.genius.android.reciper.CommentDialog.POSITION_X";
     final static String POSITION_Y = "com.genius.android.reciper.CommentDialog.POSITION_Y";
     final static String SNAP_POSITION = "com.genius.android.reciper.CommentDialog.SNAP_POSITION";
     final static String RECIPE_ID = "com.genius.android.reciper.RECIPE_ID";
 
-    private EditText mIngredient;
+    private EditText mComment;
     private float mX;
     private float mY;
     private int snapPos;
@@ -47,16 +48,16 @@ public class IngredientDialog extends DialogFragment {
     private ArrayList<Snap> mSnaps;
     private Button mAddButton;
     private Snap mCurrentSnap;
-    public IngredientDialog(){
+    public CommentDialog(){
     }
 
-    public static IngredientDialog newInstance(float positionX, float positionY, int snapPosition, UUID recipeId){
+    public static CommentDialog newInstance(float positionX, float positionY, int snapPosition, UUID recipeId){
         Bundle args = new Bundle();
         args.putSerializable(POSITION_X, positionX);
         args.putSerializable(POSITION_Y, positionY);
         args.putSerializable(SNAP_POSITION, snapPosition);
         args.putSerializable(RECIPE_ID, recipeId);
-        IngredientDialog fragment = new IngredientDialog();
+        CommentDialog fragment = new CommentDialog();
         fragment.setArguments(args);
         return fragment;
     }
@@ -94,6 +95,7 @@ public class IngredientDialog extends DialogFragment {
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
+        sendResult(Activity.RESULT_OK);
     }
 
     @Nullable
@@ -101,11 +103,11 @@ public class IngredientDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.ingredient_dialog_fragment, container);
+        View view = inflater.inflate(R.layout.comment_dialog_fragment, container);
         Window window = getDialog().getWindow();
         window.requestFeature(Window.FEATURE_NO_TITLE);
-        mIngredient = (EditText) view.findViewById(R.id.xy_ingredient);
-        mIngredient.addTextChangedListener(new TextWatcher() {
+        mComment = (EditText) view.findViewById(R.id.xy_comment);
+        mComment.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -113,7 +115,7 @@ public class IngredientDialog extends DialogFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(mIngredient.getText().toString().length() != 0)
+                if(mComment.getText().toString().length() != 0)
                     mAddButton.setEnabled(true);
             }
 
@@ -122,23 +124,26 @@ public class IngredientDialog extends DialogFragment {
 
             }
         });
-
-        mAddButton = (Button) view.findViewById(R.id.ingredient_add_button);
+        mAddButton = (Button) view.findViewById(R.id.add_comment_button);
         mAddButton.setEnabled(false);
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String theIngredient = mIngredient.getText().toString();
-                Log.d("Dialog", theIngredient);
-                if (theIngredient.length() != 0) {
+                String theComment = mComment.getText().toString();
+                Log.d("Dialog", theComment);
+                if(theComment.length() != 0) {
                     //Snap latestSnap = RecipeBook.getTheRecipeBook(getContext()).getLatestRecipe().getSnap(snapPos);
                     Snap latestSnap = mCurrentSnap;
-                    Ingredient i = new Ingredient();
-                    i.setCoordinate(mX, mY);
-                    i.setIngredient(theIngredient);
-                    latestSnap.addIngredient(i);
-                    for(int j = 0; j < latestSnap.getIngredientList().size(); j++)
-                        Log.d("ingredienTtest", latestSnap.getIngredientList().get(j).getIngredient());
+                    Comment result = latestSnap.searchComments(mX, mY);
+
+                    Toast.makeText(getActivity(), "New Comment", Toast.LENGTH_SHORT).show();
+                    Comment comment = latestSnap.newComment(mCurrentSnap.getId());
+                    comment.setX(mX);
+                    comment.setY(mY);
+                    mTheBook.addComment(comment);
+                    //Comment newestComment = latestSnap.getLatestComment();
+                    //comment.addTextComment(mComment.getText().toString());
+                    mTheBook.addCommentText(theComment, comment);
                 }
                 sendResult(Activity.RESULT_OK);
                 dismiss();

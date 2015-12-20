@@ -4,18 +4,20 @@ package com.bignerdranch.android.reciper;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.bignerdranch.android.reciper.Models.Recipe;
 import com.bignerdranch.android.reciper.Models.Snap;
 import com.bignerdranch.android.reciper.SnapControllers.NewRecipeSnapPagerActivity;
-import com.bignerdranch.android.reciper.Models.Recipe;
 /**
- * Created by bubujay on 11/13/15.
+ *  A class controlling a fragment which controls the homepage
+ *
+ *  @author Basileal Imana, Bemnet Demere and Maria Dyane
+ *  @version 1.0
+ *  @since 1/13/15.
  */
 public class HomePageFragment extends Fragment {
 

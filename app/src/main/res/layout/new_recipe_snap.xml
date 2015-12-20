@@ -70,28 +70,5 @@
             android:layout_marginLeft="1dp"/>
     </LinearLayout>
 
-    <Button
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:text="I"
-        android:textSize="30dp"
-        android:fontFamily=""
-        android:id="@+id/IToggleButton"
-        android:background="@drawable/round_borders"
-        android:layout_above="@+id/finish_cancel_layout"
-        android:layout_alignRight="@+id/finish_cancel_layout"
-        android:layout_alignEnd="@+id/finish_cancel_layout" />
-    <Button
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:text="V"
-        android:textSize="30dp"
-        android:fontFamily=""
-        android:id="@+id/VToggleButton"
-        android:background="@drawable/round_borders"
-        android:layout_above="@+id/IToggleButton"
-        android:layout_alignLeft="@+id/IToggleButton"
-        android:layout_alignStart="@+id/IToggleButton" />
-
 
 </RelativeLayout>

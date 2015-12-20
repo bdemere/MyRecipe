@@ -33,18 +33,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bignerdranch.android.reciper.Comment.CommentDialog;
-import com.bignerdranch.android.reciper.Comment.EditCommentDialog;
-import com.bignerdranch.android.reciper.Comment.IngredientDialog;
-import com.bignerdranch.android.reciper.Comment.VideoCommentDialog;
+import com.bignerdranch.android.reciper.Dialogs.CommentDialog;
+import com.bignerdranch.android.reciper.Dialogs.EditCommentDialog;
 import com.bignerdranch.android.reciper.HomePageActivity;
-import com.bignerdranch.android.reciper.Models.Comment;
-import com.bignerdranch.android.reciper.Models.Ingredient;
-import com.bignerdranch.android.reciper.Models.Recipe;
-import com.bignerdranch.android.reciper.Models.Snap;
 import com.bignerdranch.android.reciper.PictureUtils;
 import com.bignerdranch.android.reciper.R;
+import com.bignerdranch.android.reciper.Models.Comment;
+import com.bignerdranch.android.reciper.Models.Recipe;
 import com.bignerdranch.android.reciper.RecipeBook;
+import com.bignerdranch.android.reciper.Models.Snap;
 import com.bignerdranch.android.reciper.RecipeInfoFormActivity;
 
 import java.io.File;
@@ -74,11 +71,7 @@ public class NewSnapFragment extends Fragment{
     private LinearLayout mFinishCancelLayout;
     private Button mFinishButton;
     private Button mCancelButton;
-    private Button mToggleV;
-    private Button mToggleI;
 
-    private Boolean mToggledV = false;
-    private Boolean mToggledI = false;
 
     private Button mVP;
     private TextView mcoordView;
@@ -156,9 +149,6 @@ public class NewSnapFragment extends Fragment{
         mFinishCancelLayout = (LinearLayout) v.findViewById(R.id.finish_cancel_layout);
         mFinishButton = (Button) v.findViewById(R.id.finish_button);
         mCancelButton = (Button) v.findViewById(R.id.cancel_button);
-        mToggleI = (Button) v.findViewById(R.id.IToggleButton);
-        mToggleV = (Button) v.findViewById(R.id.VToggleButton);
-
         mSnapImage.setClickable(true);
 
         Log.d("TAG", "snap being  created with id: " + mCurrentSnap.getId() + " in recipe with ID: " + recipeID + " and isCamera: " + isCamera);
@@ -205,14 +195,12 @@ public class NewSnapFragment extends Fragment{
             @Override
             public void onFinish() {
                 if(isShifted){
-                    float shiftFactorR = 200;
-                    //float shiftFactorW = 250;
+                    float shiftFactorR = 250;
+                    float shiftFactorW = 250;
                     int speed = 200;
-                    if(!mToggledI && !mToggledV) {
-                        mToggleI.animate().xBy(shiftFactorR).setDuration(speed);
-                        mToggleV.animate().xBy(shiftFactorR).setDuration(speed);
-                        isShifted = !isShifted;
-                    }
+                    mRetakeButton.animate().xBy(-shiftFactorR).setDuration(speed);
+                    mWrapUpButton.animate().xBy(shiftFactorW).setDuration(speed);
+                    isShifted = !isShifted;
                 }
             }
         }.start();
@@ -220,7 +208,7 @@ public class NewSnapFragment extends Fragment{
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mSnaps.size() == 1) {
+                if(mSnaps.size() == 1) {
                     mTheBook.deleteRecipes(mRecipe);
                     Intent intent = new Intent(getActivity(), HomePageActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -250,10 +238,10 @@ public class NewSnapFragment extends Fragment{
         mFinishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mSnaps.size() == 1) {
+                if(mSnaps.size() == 1) {
                     Toast.makeText(getActivity(), "No pictures added", Toast.LENGTH_LONG).show();
                 } else {
-                    Intent intent = RecipeInfoFormActivity.newIntent(getActivity(), mRecipe.getID(), true);
+                    Intent intent = RecipeInfoFormActivity.newIntent(getActivity(), mRecipe.getID(),true);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     getActivity().finish();
@@ -262,79 +250,27 @@ public class NewSnapFragment extends Fragment{
             }
         });
 
-        mToggleI.setTranslationX(200);
-        mToggleV.setTranslationX(200);
-        mSnapImage.setOnClickListener(new View.OnClickListener() {
+        /*mSnapImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("mSnapImage", ": short Pressed");
-                float shiftFactorR = 200;//dpToPx(mRetakeButton.getWidth());
+                float shiftFactorR = 250;//dpToPx(mRetakeButton.getWidth());
                 float shiftFactorW = 250;//dpToPx(mWrapUpButton.getWidth());
                 int speed = 200;
-                int[] locI = new int[2];
-                int[] locV = new int[2];
-                mToggleI.getLocationOnScreen(locI);
-                mToggleV.getLocationOnScreen(locV);
-                if(!mToggledI && !mToggledV) {
-                    if (!isShifted) {
-
-                        mToggleI.animate().xBy(-shiftFactorR).setDuration(speed);
-                        mToggleV.animate().xBy(-shiftFactorR).setDuration(speed);
-                        Log.d("toggle1", "" + locI[0] + " " + locV[1]);
-                        isShifted = !isShifted;
-                        //mRetakeButton.animate().xBy(shiftFactorR).setDuration(speed);
-                        //mWrapUpButton.animate().xBy(-shiftFactorW).setDuration(speed);
-
-                    } else {
-                        mToggleI.animate().xBy(shiftFactorR).setDuration(speed);
-                        mToggleV.animate().xBy(shiftFactorR).setDuration(speed);
-                        Log.d("toggle2", "" + locI[0] + " " + locV[1]);
-                        isShifted = !isShifted;
-                        ///mRetakeButton.animate().xBy(-shiftFactorR).setDuration(speed);
-                        //mWrapUpButton.animate().xBy(shiftFactorW).setDuration(speed);
-                    }
-
-                    hideTimer.start();
+                if (!isShifted) {
+                    mRetakeButton.animate().xBy(shiftFactorR).setDuration(speed);
+                    mWrapUpButton.animate().xBy(-shiftFactorW).setDuration(speed);
+                } else {
+                    mRetakeButton.animate().xBy(-shiftFactorR).setDuration(speed);
+                    mWrapUpButton.animate().xBy(shiftFactorW).setDuration(speed);
                 }
+                isShifted = !isShifted;
+                hideTimer.start();
 
                 //Toast.makeText(getActivity(), "SNAP ID: " + mCurrentSnap.getId(), Toast.LENGTH_LONG).show();
             }
-        });
+        });*/
 
-
-        mToggleI.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!mToggledI) {
-                    mToggleI.setBackgroundResource(R.drawable.round_bordersalternate);
-                    mToggleV.setEnabled(false);
-                    //mToggleV.animate().scaleXBy(-2).setDuration(200);
-                    //mToggleV.animate().scaleYBy(-2).setDuration(200);
-                }else {
-                    mToggleI.setBackgroundResource(R.drawable.round_borders);
-                    mToggleV.setEnabled(true);
-                    hideTimer.start();
-                    //mToggleV.animate().scaleXBy(2).setDuration(200);
-                    //mToggleV.animate().scaleYBy(2).setDuration(200);
-
-                }
-                mToggledI = !mToggledI;
-            }
-        });
-        mToggleV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!mToggledV) {
-                    mToggleV.setBackgroundResource(R.drawable.round_bordersalternate);
-                    mToggleI.setEnabled(false);
-                }else {
-                    mToggleV.setBackgroundResource(R.drawable.round_borders);
-                    mToggleI.setEnabled(true);
-                    hideTimer.start();
-                }
-                mToggledV = !mToggledV;
-            }
-        });
         mSnapImage.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -355,39 +291,16 @@ public class NewSnapFragment extends Fragment{
                 //Toast.makeText(getActivity(), toastString, Toast.LENGTH_SHORT).show();
                 Log.d("fragment", "you long-touched at x: " + x + " y: " + y);
                 Comment result = mCurrentSnap.searchComments(x,y);
-                if(mToggledV) {
-                    if (result == null) {
-                        //Bitmap tick = BitmapFactory.decodeResource(getResources(), R.drawable.video_comment);
-                        //mSnapImage.setImageBitmap(overlayBitmapToxy(mBackground, getResizedBitmap(tick, 100, 100), x, y));
-                        VideoCommentDialog dialog = VideoCommentDialog.newInstance(x, y, snapID, recipeID);
-                        //CommentDialog dialog = CommentDialog.newInstance(x, y, snapID, recipeID);
-                        dialog.setTargetFragment(NewSnapFragment.this, REQUEST_COMMENTS);
-                        dialog.show(getFragmentManager(), "comment at xy");
-                    } else {
-                        EditCommentDialog dialog = EditCommentDialog.newInstance(x, y, snapID, recipeID);
-                        dialog.setTargetFragment(NewSnapFragment.this, REQUEST_COMMENTS);
-                        dialog.show(getFragmentManager(), "comment at xy");
-                    }
-                }else if(mToggledI) {
-                    //Bitmap tick = BitmapFactory.decodeResource(getResources(), R.drawable.video_comment);
+                if(result == null) {
+                    //Bitmap tick = BitmapFactory.decodeResource(getResources(), R.drawable.commentn);
                     //mSnapImage.setImageBitmap(overlayBitmapToxy(mBackground, getResizedBitmap(tick, 100, 100), x, y));
-                    IngredientDialog dialog = IngredientDialog.newInstance(x, y, snapID, recipeID);
-                    //CommentDialog dialog = CommentDialog.newInstance(x, y, snapID, recipeID);
+                    CommentDialog dialog = CommentDialog.newInstance(x, y, snapID, recipeID);
                     dialog.setTargetFragment(NewSnapFragment.this, REQUEST_COMMENTS);
                     dialog.show(getFragmentManager(), "comment at xy");
-
-                }else if(!mToggledI && !mToggledV){
-                    if (result == null) {
-                        //Bitmap tick = BitmapFactory.decodeResource(getResources(), R.drawable.commentn);
-                        //mSnapImage.setImageBitmap(overlayBitmapToxy(mBackground, getResizedBitmap(tick, 100, 100), x, y));
-                        CommentDialog dialog = CommentDialog.newInstance(x, y, snapID, recipeID);
-                        dialog.setTargetFragment(NewSnapFragment.this, REQUEST_COMMENTS);
-                        dialog.show(getFragmentManager(), "comment at xy");
-                    } else {
-                        EditCommentDialog dialog = EditCommentDialog.newInstance(x, y, snapID, recipeID);
-                        dialog.setTargetFragment(NewSnapFragment.this, REQUEST_COMMENTS);
-                        dialog.show(getFragmentManager(), "comment at xy");
-                    }
+                }else {
+                    EditCommentDialog dialog = EditCommentDialog.newInstance(x, y, snapID, recipeID);
+                    dialog.setTargetFragment(NewSnapFragment.this, REQUEST_COMMENTS);
+                    dialog.show(getFragmentManager(), "comment at xy");
                 }
                 return false;
             }
@@ -424,8 +337,7 @@ public class NewSnapFragment extends Fragment{
             Log.d("TAG", "onActivityResult: REQUEST_COMMENTS");
             mSnaps = mTheBook.getSnaps(recipeID);
             mCurrentSnap = mSnaps.get(snapID);
-            Bitmap temp = drawCommentLocations(mBackground);
-            mSnapImage.setImageBitmap(drawIngredientLocations(temp));
+            mSnapImage.setImageBitmap(drawCommentLocations(mBackground));
         }
 
         if(requestCode == REQUEST_PHOTO) {
@@ -436,24 +348,11 @@ public class NewSnapFragment extends Fragment{
 
     public Bitmap drawCommentLocations(Bitmap bitmap){
         Bitmap tick = BitmapFactory.decodeResource(getResources(), R.drawable.commentn);
-        Bitmap vid = BitmapFactory.decodeResource(getResources(), R.drawable.comment);
-
         Bitmap smallTick =  getResizedBitmap(tick, 100, 100);
-        Bitmap smallVid =  getResizedBitmap(vid, 100, 100);
-
 
         //mCurrentSnap.setComments(mTheBook.getComments(mCurrentSnap.getId()));
         ArrayList<Comment> currentSnapComments = mCurrentSnap.getComments();
-        ////////
-        ArrayList<Ingredient> currentSnapIngredients = mCurrentSnap.getIngredientList();
-        for(int j = 0; j < currentSnapIngredients.size(); j++)
-            Log.d("FromNewSnap", currentSnapIngredients.get(j).getIngredient());
 
-        for(Ingredient ingredient :currentSnapIngredients){
-            Bitmap tempBitmap = overlayBitmapToxy(bitmap, smallTick, ingredient.getX(), ingredient.getY());
-            bitmap = tempBitmap;
-        }
-        ///////////
         for(Comment comment:currentSnapComments){
             Bitmap tempBitmap = overlayBitmapToxy(bitmap, smallTick, comment.getX(), comment.getY());
             bitmap = tempBitmap;
@@ -461,25 +360,6 @@ public class NewSnapFragment extends Fragment{
         return bitmap;
     }
 
-    public Bitmap drawIngredientLocations(Bitmap bitmap){
-        Bitmap tick = BitmapFactory.decodeResource(getResources(), R.drawable.commentn);
-        Bitmap vid = BitmapFactory.decodeResource(getResources(), R.drawable.comment);
-
-        Bitmap smallTick =  getResizedBitmap(tick, 100, 100);
-        Bitmap smallVid =  getResizedBitmap(vid, 100, 100);
-
-
-        //mCurrentSnap.setComments(mTheBook.getComments(mCurrentSnap.getId()));
-        ArrayList<Ingredient> currentSnapIngredients = mCurrentSnap.getIngredientList();
-        for(int j = 0; j < currentSnapIngredients.size(); j++)
-            Log.d("FromNewSnap", currentSnapIngredients.get(j).getIngredient());
-
-        for(Ingredient ingredient :currentSnapIngredients){
-            Bitmap tempBitmap = overlayBitmapToxy(bitmap, smallTick, ingredient.getX(), ingredient.getY());
-            bitmap = tempBitmap;
-        }
-        return bitmap;
-    }
     public static Bitmap RotateBitmap(Bitmap source, float angle)
     {
         Matrix matrix = new Matrix();

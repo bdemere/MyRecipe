@@ -1,4 +1,4 @@
-package com.bignerdranch.android.reciper.Comment;
+package com.bignerdranch.android.reciper.Dialogs;
 
 import android.content.DialogInterface;
 import android.os.Bundle;

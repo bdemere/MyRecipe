@@ -26,7 +26,6 @@ import android.widget.Toast;
 
 import com.bignerdranch.android.reciper.Comment.DisplayCommentsDialog;
 import com.bignerdranch.android.reciper.Models.Recipe;
-import com.bignerdranch.android.reciper.PictureUtils;
 import com.bignerdranch.android.reciper.R;
 import com.bignerdranch.android.reciper.Models.Comment;
 import com.bignerdranch.android.reciper.RecipeBook;
@@ -47,18 +46,6 @@ public class SnapFragment extends Fragment{
     private ImageView mSnapImage;
     private Button mRetakeButton;
     private Button mWrapUpButton;
-
-    private Button mVP;
-    private TextView mcoordView;
-    private TextView mTitle;
-    private Bitmap mSnapBitmap;
-    private Button mButtonTemp;
-    /* ...on touch variables ... */
-    private long mTouchStartTime;
-    private long mLongClickDuration = 500;
-
-    private boolean isShifted = false;
-    //private int shiftFactor = 1;
 
     private int snapID;
     private UUID recipeID;
@@ -86,12 +73,10 @@ public class SnapFragment extends Fragment{
         super.onCreate(savedInstanceState);
         snapID = (int)getArguments().getSerializable(SNAP_ID);
         recipeID = (UUID)getArguments().getSerializable(RECIPE_ID);
-
         mTheBook = RecipeBook.getTheRecipeBook(getActivity());
         mRecipe = mTheBook.getRecipe(recipeID);
         mSnaps = mTheBook.getSnaps(recipeID);
         mCurrentSnap = mSnaps.get(snapID);
-        //mCurrentSnap.setComments(mTheBook.getComments(mCurrentSnap.getId()));
     }
 
     @Override
@@ -103,10 +88,8 @@ public class SnapFragment extends Fragment{
         mWrapUpButton = (Button) v.findViewById(R.id.wrapup_button);
         mSnapImage.setClickable(true);
 
-        Bitmap background = BitmapFactory.decodeResource(getResources(), mCurrentSnap.getPicture());
-
         File mPhotoFile = RecipeBook.getTheRecipeBook(getActivity()).getPhotoFile(mCurrentSnap);
-        Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
+        Bitmap bitmap = BitmapFactory.decodeFile(mPhotoFile.getPath());
 
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
@@ -115,70 +98,11 @@ public class SnapFragment extends Fragment{
         int width = size.x;
         int height = size.y;
 
-        //mSnapImage.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        //Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-        //mSnapImage.setImageDrawable(drawable);
+
         Bitmap tempBitmap = getResizedBitmap(RotateBitmap(bitmap, 90), width, height);
         bitmap = drawCommentLocations(tempBitmap);
-        //bitmap = drawCommentLocations(bitmap);
         mSnapImage.setImageBitmap(bitmap);
-        //mSnapImage.setImageBitmap(bitmap);
 
-        //mButtonTemp = (Button) v.findViewById(R.id.button_temp);
-
-       /* Recipe.getThisRecipe().testImageSetter();
-        mRecipe = Recipe.getThisRecipe().getSnaps();
-        mSnapImage = (ImageView) v.findViewById(R.id.snap_image);
-        mVP = (Button) v.findViewById(R.id.vpager_button);
-        mSnapImage.setImageResource(mRecipe.get(snapID).getPicture());
-
-        mVP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View b) {
-                Log.d("fragment", "you touched at x: " + x + " y: " + y);
-                String toastString = "x : " + x + " y: " + y;
-                Toast.makeText(getActivity(), toastString, Toast.LENGTH_SHORT).show();
-            }
-        });
-        */
-        //mSnapImage.animate().y(-1*(mRetakeButton.getHeight())).setDuration(400);
-
-        //mSnapImage.animate().y(isShifted * mRetakeButton.getHeight()).setDuration(1000);
-        final CountDownTimer hideTimer = new CountDownTimer(2000,1000){
-            @Override
-            public void onTick(long millisUntilFinished) {
-            }
-            @Override
-            public void onFinish() {
-                if(isShifted){
-                    float shiftFactorR = 250;
-                    float shiftFactorW = 250;
-                    int speed = 200;
-                    mRetakeButton.animate().xBy(-shiftFactorR).setDuration(speed);
-                    mWrapUpButton.animate().xBy(shiftFactorW).setDuration(speed);
-                    isShifted = !isShifted;
-                }
-            }
-        }.start();
-
-        /*mSnapImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("mSnapImage", ": short Pressed");
-                float shiftFactorR = 250;//dpToPx(mRetakeButton.getWidth());
-                float shiftFactorW = 250;//dpToPx(mWrapUpButton.getWidth());
-                int speed = 200;
-                if (!isShifted) {
-                    mRetakeButton.animate().xBy(shiftFactorR).setDuration(speed);
-                    mWrapUpButton.animate().xBy(-shiftFactorW).setDuration(speed);
-                } else {
-                    mRetakeButton.animate().xBy(-shiftFactorR).setDuration(speed);
-                    mWrapUpButton.animate().xBy(shiftFactorW).setDuration(speed);
-                }
-                isShifted = !isShifted;
-                hideTimer.start();
-            }
-        });*/
 
         mSnapImage.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
@@ -190,28 +114,20 @@ public class SnapFragment extends Fragment{
             }
         });
 
-
-        mSnapImage.setOnLongClickListener(new View.OnLongClickListener() {
+        mSnapImage.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-                /*String toastString = "x : " + x + " y: " + y;
-                Toast.makeText(getActivity(), toastString, Toast.LENGTH_SHORT).show();
-                Log.d("fragment", "you long-touched at x: " + x + " y: " + y);
-                CommentDialog dialog = CommentDialog.newInstance(x, y, snapID);
-                dialog.show(getFragmentManager(), "comment at xy");*/
-                //Comment result = RecipeBook.getTheRecipeBook(getContext()).getRecipe(recipeID).getSnap(snapID).getLatestComment();//mCurrentSnap.searchComments((int)x, (int)y);
-
+            public void onClick(View v) {
                 Comment result = mCurrentSnap.searchComments(x, y);
 
-                if(result == null)
+                if (result == null)
                     Toast.makeText(getActivity(), "No Comment", Toast.LENGTH_SHORT).show();
                 else {
                     DisplayCommentsDialog dialog = DisplayCommentsDialog.newInstance(x, y, recipeID, snapID);
                     dialog.show(getFragmentManager(), "comment at xy");
                 }
-                return false;
             }
         });
+
         return v;
     }
 
@@ -219,7 +135,6 @@ public class SnapFragment extends Fragment{
         Bitmap tick = BitmapFactory.decodeResource(getResources(), R.drawable.commentn);
         Bitmap smallTick =  getResizedBitmap(tick, 100, 100);
 
-        //mCurrentSnap.setComments(mTheBook.getComments(mCurrentSnap.getId()));
         ArrayList<Comment> currentSnapComments = mCurrentSnap.getComments();
 
         for(Comment comment:currentSnapComments){
@@ -260,8 +175,6 @@ public class SnapFragment extends Fragment{
         int tickWidth = tick.getWidth();
         int tickHeight = tick.getHeight();
 
-        //float marginLeft = (float)(backgroundWidth  -mx);//tickWidth * 0.5);
-        //float marginTop =  (float)(backgroundHeight - my);//tickHeight * 0.5);
         float marginLeft = (float)( mx - tickWidth * 0.5);
         float marginTop = (float)( my - tickHeight * 0.5);
 

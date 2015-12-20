@@ -26,7 +26,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     RecipeTable.Cols.SERVINGS + ", " +
                     RecipeTable.Cols.TAGS + ", " +
                     RecipeTable.Cols.DIFFICULTY + ", " +
-                    RecipeTable.Cols.DURATION +
+                    RecipeTable.Cols.DURATION + ", " +
+                    RecipeTable.Cols.PRIMARY_SNAP +
                     ")";
 
     private static final String CREATE_TABLE_SNAP =

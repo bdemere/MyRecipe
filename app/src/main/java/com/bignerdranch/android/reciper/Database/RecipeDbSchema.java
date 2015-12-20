@@ -16,6 +16,7 @@ public class RecipeDbSchema {
             public static final String TAGS = "tags";
             public static final String DURATION = "duration";
             public static final String DIFFICULTY = "difficulty";
+            public static final String PRIMARY_SNAP = "snapid";
         }
     }
 }

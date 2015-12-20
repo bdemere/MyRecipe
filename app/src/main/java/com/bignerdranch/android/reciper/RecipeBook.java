@@ -15,6 +15,7 @@ import com.bignerdranch.android.reciper.Database.RecipeCursorWrapper;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static com.bignerdranch.android.reciper.Database.CommentDbSchema.*;
@@ -144,9 +145,9 @@ public class RecipeBook {
                 new String[]{snapId.toString()}
         );
         try {
-            if (cursor.getCount() == 0) {
+            /*if (cursor.getCount() == 0) {
                 return null;
-            }
+            }*/
             cursor.moveToFirst();
             return cursor.getSnap();
         } finally {
@@ -239,6 +240,7 @@ public class RecipeBook {
         values.put(RecipeTable.Cols.TAGS, recipe.getTags());
         values.put(RecipeTable.Cols.DURATION, recipe.getDuration());
         values.put(RecipeTable.Cols.DIFFICULTY, recipe.getDifficulty());
+        values.put(RecipeTable.Cols.PRIMARY_SNAP, recipe.getPrimarySnap().toString());
 
         return values;
     }
@@ -271,7 +273,7 @@ public class RecipeBook {
                 whereArgs,
                 null, //group by
                 null, //having
-                null //order by
+                RecipeTable.Cols.DATE + " DESC" //order by
         );
         return new RecipeCursorWrapper(cursor);
     }

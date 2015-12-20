@@ -31,6 +31,7 @@ public class RecipeCursorWrapper extends CursorWrapper{
         String tags = getString(getColumnIndex(RecipeTable.Cols.TAGS));
         long duration = getLong(getColumnIndex(RecipeTable.Cols.DURATION));
         String difficulty = getString(getColumnIndex(RecipeTable.Cols.DIFFICULTY));
+        String snapUuidString = getString(getColumnIndex(RecipeTable.Cols.PRIMARY_SNAP));
 
         Recipe recipe = new Recipe(UUID.fromString(uuidString));
         recipe.setTitle(title);
@@ -40,6 +41,7 @@ public class RecipeCursorWrapper extends CursorWrapper{
         recipe.setTags(tags);
         recipe.setDuration(duration);
         recipe.setDifficulty(difficulty);
+        recipe.setPrimarySnap(UUID.fromString(snapUuidString));
 
         return recipe;
     }

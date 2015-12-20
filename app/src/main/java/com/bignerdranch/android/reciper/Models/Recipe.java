@@ -19,6 +19,7 @@ public class Recipe {
     private long mDuration;
     private String mDifficulty;
     private ArrayList<Snap> mSnaps = new ArrayList<>();
+    private UUID mPrimarySnap;
 
     public Recipe(){
         this(UUID.randomUUID());
@@ -33,6 +34,7 @@ public class Recipe {
         mServings = "N/A";
         mTags = "N/A";
         mDifficulty = "Intermediate";
+        mPrimarySnap = dummySnap.getId();
     }
 
     public void setDifficulty(String difficulty) {
@@ -102,9 +104,17 @@ public class Recipe {
         return mSnaps.get(position).getId();
     }
 
+    public void setPrimarySnap(UUID snapId) {
+        mPrimarySnap = snapId;
+    }
+    public UUID getPrimarySnap() {
+        return mPrimarySnap;
+    }
+
     public static Snap newSnap(UUID recipeID){
         Snap newSnap = new Snap();
         newSnap.setmParentRecipeID(recipeID);
+
         //mSnaps.add(0,newSnap);
         //newSnap.setPicture(R.drawable.burger); // temporary
         return newSnap;

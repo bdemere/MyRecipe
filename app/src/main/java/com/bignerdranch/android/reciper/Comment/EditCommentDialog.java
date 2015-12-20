@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -95,7 +96,7 @@ public class EditCommentDialog extends DialogFragment {
         display.getSize(size);
         int width = size.x;
         int height = size.y;
-        window.setLayout((3*width)/4,(int)(height/2.8));
+        window.setLayout((5 * width)/6, GridLayout.LayoutParams.WRAP_CONTENT);
         window.setGravity(Gravity.CENTER);
         window.setGravity(Gravity.CENTER);
     }

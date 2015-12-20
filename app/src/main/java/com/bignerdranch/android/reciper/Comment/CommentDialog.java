@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.Toast;
 
 import com.bignerdranch.android.reciper.Models.Comment;
@@ -28,6 +29,8 @@ import com.bignerdranch.android.reciper.RecipeBook;
 
 import java.util.ArrayList;
 import java.util.UUID;
+
+import static android.widget.GridLayout.*;
 
 /**
  * Created by bubujay on 11/18/15.
@@ -87,7 +90,7 @@ public class CommentDialog extends DialogFragment {
         display.getSize(size);
         int width = size.x;
         int height = size.y;
-        window.setLayout((3*width)/4,height/4);
+        window.setLayout((5 * width)/6, GridLayout.LayoutParams.WRAP_CONTENT);
         window.setGravity(Gravity.CENTER);
         window.setGravity(Gravity.CENTER);
     }
@@ -141,6 +144,7 @@ public class CommentDialog extends DialogFragment {
                     comment.setX(mX);
                     comment.setY(mY);
                     mTheBook.addComment(comment);
+                    //comment.setCommentsText(theComment);
                     //Comment newestComment = latestSnap.getLatestComment();
                     //comment.addTextComment(mComment.getText().toString());
                     mTheBook.addCommentText(theComment, comment);

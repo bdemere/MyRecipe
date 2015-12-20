@@ -5,16 +5,27 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:orientation="vertical"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp">
+    android:paddingTop="16dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ADDED COMMENTS"
+        style="?android:listSeparatorTextViewStyle"/>
     <include
         layout="@layout/fragment_comment_list"
         android:id="@+id/edit_dialog_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="100dp"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="NEW COMMENT"
+        style="?android:listSeparatorTextViewStyle"/>
     <include
         layout="@layout/multiline_comment"
         android:id="@+id/include_multiline_edit"
@@ -25,6 +36,8 @@
     <include
         layout="@layout/comment_media_dialog_bar"
         android:id="@+id/include_bar_comment"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"/>

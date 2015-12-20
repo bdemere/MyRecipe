@@ -3,6 +3,7 @@ package com.bignerdranch.android.reciper;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -47,6 +48,7 @@ public class DetailRecipeFragment extends Fragment {
     private TextView mDuration;
     private TextView mLevel;
     private TextView mServings;
+    private TextView mTags;
 
     public static DetailRecipeFragment newInstance(UUID RecipeID) {
         Bundle args = new Bundle();
@@ -103,6 +105,7 @@ public class DetailRecipeFragment extends Fragment {
         mServings = (TextView) v.findViewById(R.id.servings_text_view);
         mPhotoRecyclerView = (RecyclerView) v.findViewById(R.id.snap_recycler_view);
         mRecipeProfile = (ImageView) v.findViewById(R.id.recipe_profile_image);
+        mTags = (TextView) v.findViewById(R.id.tags_text_view);
 
         LinearLayoutManager layoutManager;
         if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -119,12 +122,13 @@ public class DetailRecipeFragment extends Fragment {
         mDuration.setText(mRecipe.getDuration() + " min");
         mLevel.setText(mRecipe.getDifficulty());
         mServings.setText(mRecipe.getServings());
+        mTags.setText("TAGS: " + mRecipe.getTags());
 
         mPhotoRecyclerView.setLayoutManager(layoutManager);
 
         if(mSnaps.size() > 1) {
             File mPhotoFile = RecipeBook.getTheRecipeBook(getActivity()).getPhotoFile(mSnaps.get(1));
-            Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
+            Bitmap bitmap = BitmapFactory.decodeFile(mPhotoFile.getPath());
             mRecipeProfile.setImageBitmap(RotateBitmap(bitmap,90));
         }
         updateUI();
@@ -149,7 +153,7 @@ public class DetailRecipeFragment extends Fragment {
             if (mPhotoFile == null || !mPhotoFile.exists()) {
                 mItemImageView.setImageDrawable(null);
             } else {
-                Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
+                Bitmap bitmap = BitmapFactory.decodeFile(mPhotoFile.getPath());
                 Bitmap tempBitmap = getResizedBitmap(RotateBitmap(bitmap, 90), 600, 1000);
                 bitmap = tempBitmap;
                 mItemImageView.setImageBitmap(bitmap);

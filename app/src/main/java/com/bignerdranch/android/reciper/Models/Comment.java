@@ -1,5 +1,7 @@
 package com.bignerdranch.android.reciper.Models;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -70,9 +72,14 @@ public class Comment {
     }
 
     public void addTextComment(String text) {
-        ArrayList<String> list = getCommentsList();
-        list.add(text);
-        setCommentsText(encode(list));
+        if(commentsText.length() == 0) {
+            commentsText = text;
+        }
+        else {
+            ArrayList<String> list = getCommentsList();
+            list.add(text);
+            setCommentsText(encode(list));
+        }
     }
 
     public void editTextComment(int position, String text) {
@@ -95,7 +102,10 @@ public class Comment {
 
     public static ArrayList<String> decode(String textComment) {
         String[] decoded = textComment.split("`");
-        return new ArrayList(Arrays.asList(decoded));
+        Log.d("TAG", "sizeof string[] " + decoded.length);
+        ArrayList<String> list = new ArrayList(Arrays.asList(decoded));
+        Log.d("TAG", "decode sizeof list " + list.size());
+        return list;
     }
 
 }

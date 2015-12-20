@@ -2,7 +2,9 @@ package com.bignerdranch.android.reciper;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,6 +25,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by bubujay on 11/17/15.
@@ -32,6 +36,7 @@ public class RecipeListFragment extends Fragment {
 
     private RecyclerView mRecipeRecyclerView;
     private RecipeAdapter mAdapter;
+    private List<Recipe> mRecipes;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,6 +58,8 @@ public class RecipeListFragment extends Fragment {
         private TextView mRecipeDate;
         private ImageView mImageView;
         private ArrayList<Snap> mSnaps;
+        private Snap snap;
+        private File mPhotoFile;
 
         private Recipe mRecipe;
 
@@ -69,14 +76,9 @@ public class RecipeListFragment extends Fragment {
             mRecipe = recipe;
             mRecipeTitle.setText(mRecipe.getTitle());
             mRecipeDate.setText(f.format(mRecipe.getDate()));
+            //mSnaps = RecipeBook.getTheRecipeBook(getActivity()).getSnaps(mRecipe.getID());
+            new GetSnapList().execute();
 
-            mSnaps = RecipeBook.getTheRecipeBook(getActivity()).getSnaps(mRecipe.getID());
-
-            if(mSnaps.size() > 1) {
-                File mPhotoFile = RecipeBook.getTheRecipeBook(getActivity()).getPhotoFile(mSnaps.get(1));
-                Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
-                mImageView.setImageBitmap(RotateBitmap(bitmap,90));
-            }
         }
 
         @Override
@@ -85,6 +87,30 @@ public class RecipeListFragment extends Fragment {
             Intent intent = DetailRecipeActivity.newIntent(getActivity(), mRecipe.getID());
             startActivity(intent);
             Log.d("Recipe List", "clicked a recipe " + mRecipe.getTitle());
+        }
+
+
+
+        private class GetSnapList extends
+                AsyncTask<Void, String, ArrayList<Snap>> {
+
+            @Override
+            protected ArrayList<Snap> doInBackground(Void... params) {
+                RecipeBook book = RecipeBook.getTheRecipeBook(getActivity());
+                ArrayList<Snap> snaps = book.getSnaps(mRecipe.getID());
+                return snaps;
+            }
+
+            @Override
+            protected void onPostExecute(ArrayList<Snap> result) {
+                super.onPostExecute(result);
+                mSnaps = result;
+                if(mSnaps.size() > 1) {
+                    snap = mSnaps.get(1);
+                    mPhotoFile = RecipeBook.getTheRecipeBook(getActivity()).getPhotoFile(snap);
+                    mImageView.setImageBitmap(RotateBitmap(BitmapFactory.decodeFile(mPhotoFile.getPath()),90));
+                }
+            }
         }
     }
 
@@ -129,10 +155,25 @@ public class RecipeListFragment extends Fragment {
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
     private void updateUI(){
-        RecipeBook book = RecipeBook.getTheRecipeBook(getActivity());
-        List<Recipe> recipes = book.getRecipes();
-        mAdapter = new RecipeAdapter(recipes);
-        mRecipeRecyclerView.setAdapter(mAdapter);
+        new GetRecipeList().execute();
     }
 
+    private class GetRecipeList extends
+            AsyncTask<Void, String, List<Recipe>> {
+
+        @Override
+        protected List<Recipe> doInBackground(Void... params) {
+            RecipeBook book = RecipeBook.getTheRecipeBook(getActivity());
+            List<Recipe> recipes = book.getRecipes();
+            return recipes;
+        }
+
+        @Override
+        protected void onPostExecute(List<Recipe> result) {
+            super.onPostExecute(result);
+            mRecipes = result;
+            mAdapter = new RecipeAdapter(result);
+            mRecipeRecyclerView.setAdapter(mAdapter);
+        }
+    }
 }

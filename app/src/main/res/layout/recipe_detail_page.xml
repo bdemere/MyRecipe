@@ -44,6 +44,15 @@
                     android:text="2m  "
                     android:paddingLeft="8dp"
                     android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+                <TextView
+                    android:id="@+id/tags_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TAGS: "
+                    android:layout_marginTop="8dp"
+                    android:paddingLeft="8dp"
+                    android:textAppearance="?android:attr/textAppearanceSmall"/>
             </LinearLayout>
         </LinearLayout>
 

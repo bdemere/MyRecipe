@@ -66,6 +66,7 @@ public class EditCommentDialog extends DialogFragment {
      * Creates a new instance of this fragment
      */
     public static EditCommentDialog newInstance(float positionX, float positionY, int snapPosition, UUID recipeId){
+        // builds necessary arguments to create fragment
         Bundle args = new Bundle();
         args.putSerializable(POSITION_X, positionX);
         args.putSerializable(POSITION_Y, positionY);
@@ -82,6 +83,7 @@ public class EditCommentDialog extends DialogFragment {
         mX = (float)getArguments().getSerializable(POSITION_X);
         mY = (float)getArguments().getSerializable(POSITION_Y);
         snapPos = (int)getArguments().getSerializable(SNAP_POSITION);
+        mTheBook = RecipeBook.getTheRecipeBook(getActivity());
         recipeID = (UUID)getArguments().getSerializable(RECIPE_ID);
         mSnaps = mTheBook.getSnaps(recipeID);
         mCurrentSnap = mSnaps.get(snapPos);

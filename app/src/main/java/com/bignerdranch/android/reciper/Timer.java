@@ -5,7 +5,11 @@ import android.content.Context;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by bimana2 on 12/3/15.
+ *  Singleton class to record how long cooking process took
+ *
+ *  @author Basileal Imana, Bemnet Demere and Maria Dyane
+ *  @version 1.0
+ *  @since 12/03/15.
  */
 
 public class Timer{
@@ -14,10 +18,19 @@ public class Timer{
     private static Timer mTimer;
     private static Context mContext;
 
+    /**
+     * Constructor of Timer object
+     * @param context application context
+     */
     private Timer(Context context){
         mContext = context.getApplicationContext();
     }
 
+    /**
+     * Get instance of timer
+     * @param context application content
+     * @return
+     */
     public static Timer getTimer(Context context) {
         if (mTimer == null) {
             mTimer = new Timer(context);

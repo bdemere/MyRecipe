@@ -9,7 +9,11 @@ import android.support.v7.app.ActionBar;
 import java.util.UUID;
 
 /**
- * Created by bimana2 on 12/2/15.
+ *  An activity which hosts info form page fragment
+ *
+ *  @author Basileal Imana, Bemnet Demere and Maria Dyane
+ *  @version 1.0
+ *  @since 12/02/15.
  */
 public class RecipeInfoFormActivity extends SingleFragmentActivity {
     private static final String EXTRA_RECIPE_ID =
@@ -17,6 +21,10 @@ public class RecipeInfoFormActivity extends SingleFragmentActivity {
     private static final String IS_NEW_RECIPE =
             "com.genius.android.reciper.Detail.Is_new";
 
+    /**
+     * Returns a new intent which fires this activity
+     * @param isNew determines if it is a new recipe or if existing recipe is to be edited
+     */
     public static Intent newIntent(Context packageContext, UUID recipeID, boolean isNew){
         Intent intent = new Intent(packageContext, RecipeInfoFormActivity.class);
         intent.putExtra(EXTRA_RECIPE_ID, recipeID);
@@ -24,11 +32,9 @@ public class RecipeInfoFormActivity extends SingleFragmentActivity {
         return intent;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
+    /**
+     * Returns fragment controlling recipe info form page
+     */
     @Override
     protected Fragment createFragment() {
         UUID recipeId = (UUID)getIntent().getSerializableExtra(EXTRA_RECIPE_ID);

@@ -26,7 +26,11 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Created by bubujay on 11/18/15.
+ *  Dialog displayed comments on already saved recipe snaps
+ *
+ *  @author Basileal Imana, Bemnet Demere and Maria Dyane
+ *  @version 1.0
+ *  @since 11/18/2015.
  */
 public class DisplayCommentsDialog extends DialogFragment {
     final static String POSITION_X = "com.genius.android.reciper.DisplayCommentDialog.POSITION_X";
@@ -34,24 +38,27 @@ public class DisplayCommentsDialog extends DialogFragment {
     final static String SNAP_POSITION = "com.genius.android.reciper.DisplayCommentDialog.SNAP_POSITION";
     final static String RECIPE_ID = "com.genius.android.reciper.DisplayCommentDialog.RECIPE_ID";
 
+    // member variables
     private RecyclerView mCommentRecyclerView;
     private RecipeAdapter mAdapter;
-    private TextView mComment;
     private float mX;
     private float mY;
     private int snapPos;
     private UUID recipeID;
     private Comment comment;
-
     private RecipeBook mTheBook;
-    private Recipe mRecipe;
     private ArrayList<Snap> mSnaps;
     private Snap mCurrentSnap;
 
     public DisplayCommentsDialog(){
+
     }
 
+    /**
+     * Creates a new instance of this fragment
+     */
     public static DisplayCommentsDialog newInstance(float positionX, float positionY, UUID recipeId, int snapPosition){
+        // builds necessary arguments to create fragment
         Bundle args = new Bundle();
         args.putSerializable(POSITION_X, positionX);
         args.putSerializable(POSITION_Y, positionY);
@@ -64,13 +71,12 @@ public class DisplayCommentsDialog extends DialogFragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        // initialize member variables
         mX = (float)getArguments().getSerializable(POSITION_X);
         mY = (float)getArguments().getSerializable(POSITION_Y);
         snapPos = (int)getArguments().getSerializable(SNAP_POSITION);
-
         recipeID = (UUID)getArguments().getSerializable(RECIPE_ID);
         mTheBook = RecipeBook.getTheRecipeBook(getActivity());
-        mRecipe = mTheBook.getRecipe(recipeID);
         mSnaps = mTheBook.getSnaps(recipeID);
         mCurrentSnap = mSnaps.get(snapPos);
 
@@ -81,14 +87,16 @@ public class DisplayCommentsDialog extends DialogFragment {
     @Override
     public void onResume(){
         super.onResume();
+        // set dialog window size based on the width and height of the screen
         Window window = getDialog().getWindow();
         int height = 350 + (comment.getCommentsList().size() - 1) * 100;
         int maxWidth = 800;
         int maxHeight = 800;
-        if(height < maxHeight)
-            window.setLayout(maxWidth,height);
-        else
+        if(height < maxHeight) {
+            window.setLayout(maxWidth, height);
+        } else {
             window.setLayout(maxWidth, maxHeight);
+        }
         //window.setGravity(Gravity.CENTER);
     }
 
@@ -104,28 +112,17 @@ public class DisplayCommentsDialog extends DialogFragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.display_comment_dialog_fragment, container);
-        mComment = (TextView) view.findViewById(R.id.comment_text);
-        //Snap currentSnap = RecipeBook.getTheRecipeBook(getContext()).getRecipe(recipeID).getSnap(snapPos);
-
-        //mCurrentSnap.setComments(mTheBook.getComments(mCurrentSnap.getId()));
-        //ArrayList<Comment> comments = mCurrentSnap.getComments();
-
         comment = mCurrentSnap.searchComments(mX, mY);
 
-        /*if(comment == null)
-            mComment.setText("no Comment");
-        else
-            mComment.setText(comment.getTextComment());*/
-
+        // determine where in the screen the dialog is going to be located
         Window window = getDialog().getWindow();
         window.requestFeature(Window.FEATURE_NO_TITLE);
-        // set "origin" to top left corner
-        //getDialog().setTitle("Comment");
         window.setGravity(Gravity.TOP | Gravity.LEFT);
         WindowManager.LayoutParams params = window.getAttributes();
         params.x = Math.round(mX);
         params.y = Math.round(mY);
         window.setAttributes(params);
+
         mCommentRecyclerView = (RecyclerView)view.findViewById(R.id.included_recycler_view);
         mCommentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -135,16 +132,27 @@ public class DisplayCommentsDialog extends DialogFragment {
     }
 
 
+    /**
+     * Viewholder for recycler view that list comments
+     */
     private class RecipeHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
         private TextView aComment;
+
+        /**
+         * Constructor
+         */
         public RecipeHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             aComment = (TextView) itemView.findViewById(R.id.list_item_comment_text_view);
         }
 
+        /**
+         * Sets comment textView content
+         * @param tComment
+         */
         public void bindRecipe(String tComment) {
             aComment.setText(tComment);
         }
@@ -155,16 +163,25 @@ public class DisplayCommentsDialog extends DialogFragment {
         }
     }
 
+    /**
+     * Adapter for recycler view that list comments
+     */
     private class RecipeAdapter extends RecyclerView.Adapter<RecipeHolder> {
 
+        // member variable
         private List<String> textComments;
 
+        /**
+         * Constructor
+         * @param tComments list of comment objects
+         */
         public RecipeAdapter(List<String> tComments) {
             textComments = tComments;
         }
 
         @Override
         public RecipeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            // inflates layout
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
             View view = layoutInflater.inflate(R.layout.comment_item_recipe, parent, false);
             return new RecipeHolder(view);
@@ -172,8 +189,8 @@ public class DisplayCommentsDialog extends DialogFragment {
 
         @Override
         public void onBindViewHolder(RecipeHolder holder, int position) {
+            // bind layout with data
             String tComment = textComments.get(position);
-            Log.d("recycler", "" + position);
             holder.bindRecipe(tComment);
         }
 
@@ -183,6 +200,9 @@ public class DisplayCommentsDialog extends DialogFragment {
         }
     }
 
+    /**
+     * Updates UI by attaching adpater to the RecyclerView
+     */
     private void updateUI(){
         List<String> comments = comment.getCommentsList();
         mAdapter = new RecipeAdapter(comments);

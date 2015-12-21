@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,26 +21,31 @@ import android.widget.TextView;
 
 import com.bignerdranch.android.reciper.SnapControllers.SnapPagerActivity;
 import com.bignerdranch.android.reciper.Models.Recipe;
-import com.bignerdranch.android.reciper.RecipeBook;
 import com.bignerdranch.android.reciper.Models.Snap;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.UUID;
 
 /**
- * Created by remember on 11/15/2015.
+ *  A fragment class to control the detail page of a recipe
+ *
+ *  @author Basileal Imana, Bemnet Demere and Maria Dyane
+ *  @version 1.0
+ *  @since 11/15/2015.
  */
 public class DetailRecipeFragment extends Fragment {
+
     private static final String RECIPE_ID = "com.genius.android.reciper.RECIPE_ID";
-    private PhotoAdapter mAdapter;
+
+    // member variables
     private Recipe mRecipe;
     private ArrayList<Snap> mSnaps;
     private UUID mRecipeID;
+
     private RecyclerView mPhotoRecyclerView;
     private ImageView mRecipeProfile;
-
+    private PhotoAdapter mAdapter;
     private TextView mTitle;
     private TextView mDate;
     private TextView mCategory;
@@ -50,6 +54,9 @@ public class DetailRecipeFragment extends Fragment {
     private TextView mServings;
     private TextView mTags;
 
+    /**
+     * Creates a new instance of this fragment
+     */
     public static DetailRecipeFragment newInstance(UUID RecipeID) {
         Bundle args = new Bundle();
         args.putSerializable(RECIPE_ID, RecipeID);
@@ -61,9 +68,13 @@ public class DetailRecipeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // initialize member variables
         mRecipeID = (UUID)getArguments().getSerializable(RECIPE_ID);
         mRecipe = RecipeBook.getTheRecipeBook(getActivity()).getRecipe(mRecipeID);
         mSnaps = RecipeBook.getTheRecipeBook(getActivity()).getSnaps(mRecipeID);
+
+        // this page has two menu options
         setHasOptionsMenu(true);
     }
 
@@ -78,13 +89,17 @@ public class DetailRecipeFragment extends Fragment {
         Intent intent;
         switch (item.getItemId()) {
             case R.id.menu_item_delete_recipe:
+                // delete the current recipe
                 RecipeBook.getTheRecipeBook(getActivity()).deleteRecipes(mRecipe);
                  intent = new Intent(getActivity(), RecipeListActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+
+                // destroy current activity
                 getActivity().finish();
                 return true;
             case R.id.menu_item_edit_recipe:
+                // open page for editing recipe info
                 intent = RecipeInfoFormActivity.newIntent(getActivity(), mRecipe.getID(), false);
                 startActivity(intent);
                 return true;
@@ -97,6 +112,7 @@ public class DetailRecipeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.recipe_detail_page, container, false);
 
+        // get reference to UI views
         mTitle = (TextView) v.findViewById(R.id.title_text_view);
         mDate = (TextView) v.findViewById(R.id.date_text_view);
         mCategory = (TextView) v.findViewById(R.id.category_text_view);
@@ -107,6 +123,7 @@ public class DetailRecipeFragment extends Fragment {
         mRecipeProfile = (ImageView) v.findViewById(R.id.recipe_profile_image);
         mTags = (TextView) v.findViewById(R.id.tags_text_view);
 
+        // determine the orientation of the layout
         LinearLayoutManager layoutManager;
         if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
@@ -114,8 +131,10 @@ public class DetailRecipeFragment extends Fragment {
             layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         }
 
+        // create instance for formatting date recipe was created
         DateFormat f = SimpleDateFormat.getDateInstance();
 
+        // set UI view content to data related to current recipe
         mTitle.setText(mRecipe.getTitle());
         mDate.setText(f.format(mRecipe.getDate()));
         mCategory.setText(mRecipe.getCategory());
@@ -123,24 +142,28 @@ public class DetailRecipeFragment extends Fragment {
         mLevel.setText(mRecipe.getDifficulty());
         mServings.setText(mRecipe.getServings());
         mTags.setText("TAGS: " + mRecipe.getTags());
-
         mPhotoRecyclerView.setLayoutManager(layoutManager);
 
+        // load image in the gallery
         if(mSnaps.size() > 1) {
             File mPhotoFile = RecipeBook.getTheRecipeBook(getActivity()).getPhotoFile(mSnaps.get(1));
             Bitmap bitmap = BitmapFactory.decodeFile(mPhotoFile.getPath());
-            mRecipeProfile.setImageBitmap(RotateBitmap(bitmap,90));
+            mRecipeProfile.setImageBitmap(PictureUtils.RotateBitmap(bitmap, 90));
         }
-        updateUI();
+
+        // attach adapter
+        mAdapter = new PhotoAdapter(mSnaps);
+        mPhotoRecyclerView.setAdapter(mAdapter);
+
         return v;
     }
 
-    /*private void setupAdapter() {
-        mPhotoRecyclerView.setAdapter(new PhotoAdapter());
 
-    }*/
-
+    /**
+     *   ViewHolder for displaying snaps in a RecyclerView
+     */
     private class PhotoHolder extends RecyclerView.ViewHolder {
+
         private ImageView mItemImageView;
 
         public PhotoHolder(View itemView) {
@@ -148,20 +171,29 @@ public class DetailRecipeFragment extends Fragment {
             mItemImageView = (ImageView) itemView.findViewById(R.id.text);
         }
 
+        /**
+         * Binds an image associated with a snap to the ImageView
+         *
+         * @param    Position    position of the snap in the recipe
+         */
         public void bindDrawable(final int Position) {
-            File mPhotoFile = RecipeBook.getTheRecipeBook(getActivity()).getPhotoFile(mSnaps.get(mSnaps.size() - 1 - Position));
+            // get image file
+            File mPhotoFile = RecipeBook.getTheRecipeBook(
+                    getActivity()).getPhotoFile(mSnaps.get(mSnaps.size() - 1 - Position));
+
+            // display image
             if (mPhotoFile == null || !mPhotoFile.exists()) {
                 mItemImageView.setImageDrawable(null);
             } else {
+                // resize and rotate the bitmap so that it optimally fits in the gallery
                 Bitmap bitmap = BitmapFactory.decodeFile(mPhotoFile.getPath());
-                Bitmap tempBitmap = getResizedBitmap(RotateBitmap(bitmap, 90), 600, 1000);
+                Bitmap tempBitmap = PictureUtils.
+                        getResizedBitmap(PictureUtils.RotateBitmap(bitmap, 90), 600, 1000);
                 bitmap = tempBitmap;
                 mItemImageView.setImageBitmap(bitmap);
             }
 
-            //mItemImageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            //mItemImageView.setImageBitmap(placeholder);
-
+            // onclick listener that opens ViewPager acticity when clicked on an image
             mItemImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -172,6 +204,9 @@ public class DetailRecipeFragment extends Fragment {
         }
     }
 
+    /**
+     *   Adapter for displaying snaps in a RecyclerView
+     */
     private class PhotoAdapter extends RecyclerView.Adapter<PhotoHolder> {
         private ArrayList<Snap> snaps;
 
@@ -183,7 +218,6 @@ public class DetailRecipeFragment extends Fragment {
         public PhotoHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
             View view = inflater.inflate(R.layout.gallery_item, viewGroup, false);
-            //mSnaps = RecipeBook.getTheRecipeBook().getRecipe(mRecipeID).getSnaps();
             return new PhotoHolder(view);
         }
 
@@ -196,34 +230,5 @@ public class DetailRecipeFragment extends Fragment {
         public int getItemCount() {
             return snaps.size();
         }
-    }
-
-    private void updateUI(){
-        mAdapter = new PhotoAdapter(mSnaps);
-        mPhotoRecyclerView.setAdapter(mAdapter);
-    }
-
-    public static Bitmap RotateBitmap(Bitmap source, float angle)
-    {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
-        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
-    }
-
-    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-        // CREATE A MATRIX FOR THE MANIPULATION
-        Matrix matrix = new Matrix();
-        // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // "RECREATE" THE NEW BITMAP
-        Bitmap resizedBitmap = Bitmap.createBitmap(
-                bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
-        return resizedBitmap;
     }
 }

@@ -9,13 +9,17 @@ import static com.bignerdranch.android.reciper.Database.RecipeDbSchema.RecipeTab
 import static com.bignerdranch.android.reciper.Database.SnapDbSchema.SnapTable;
 
 /**
- * Created by bimana2 on 11/28/15.
+ *  Database helper class for creating and updating tables
+ *
+ *  @author Basileal Imana, Bemnet Demere and Maria Dyane
+ *  @version 1.0
+ *  @since 11/28/15.
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final int VERSION = 1;
     private static final String DATABASE_NAME = "recipeBase.db";
 
-    // Table Create Statements
+    // table create statement for recipe table
     private static final String CREATE_TABLE_RECIPE =
             "create table " + RecipeTable.NAME + "(" +
                     " _id integer primary key autoincrement, " +
@@ -30,6 +34,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     RecipeTable.Cols.PRIMARY_SNAP +
                     ")";
 
+    // table create statement for snap table
     private static final String CREATE_TABLE_SNAP =
             "create table " + SnapTable.NAME + "(" +
                     " _id integer primary key autoincrement, " +
@@ -38,6 +43,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     SnapTable.Cols.DATE +
                     ")";
 
+    // table create statement for comments table
     private static final String CREATE_TABLE_COMMENTS =
             "create table " + CommentTable.NAME + "(" +
                     " _id integer primary key autoincrement, " +
@@ -50,6 +56,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     ")";
 
 
+    /**
+     * Constructor for creating database
+     * @param context application context
+     */
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
     }

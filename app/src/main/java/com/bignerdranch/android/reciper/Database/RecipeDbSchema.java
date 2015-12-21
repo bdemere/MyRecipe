@@ -1,12 +1,18 @@
 package com.bignerdranch.android.reciper.Database;
 
 /**
- * Created by remember on 10/30/2015.
+ *  Defines a schema for recipes table
+ *
+ *  @author Basileal Imana, Bemnet Demere and Maria Dyane
+ *  @version 1.0
+ *  @since 10/30/15.
  */
 public class RecipeDbSchema {
     public static final class RecipeTable {
+        // table name
         public static final String NAME = "recipes";
 
+        // table columns
         public static final class Cols {
             public static final String UUID = "uuid";
             public static final String TITLE = "title";

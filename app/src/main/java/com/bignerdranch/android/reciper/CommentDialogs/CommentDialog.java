@@ -61,6 +61,7 @@ public class CommentDialog extends DialogFragment {
      * Creates a new instance of this fragment
      */
     public static CommentDialog newInstance(float positionX, float positionY, int snapPosition, UUID recipeId){
+        // builds necessary arguments to create fragment
         Bundle args = new Bundle();
         args.putSerializable(POSITION_X, positionX);
         args.putSerializable(POSITION_Y, positionY);

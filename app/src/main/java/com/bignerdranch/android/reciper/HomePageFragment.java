@@ -14,13 +14,19 @@ import android.widget.Button;
 import com.bignerdranch.android.reciper.Models.Snap;
 import com.bignerdranch.android.reciper.SnapControllers.NewRecipeSnapPagerActivity;
 import com.bignerdranch.android.reciper.Models.Recipe;
+
 /**
- * Created by bubujay on 11/13/15.
+ *  Fragment which controls the homepage
+ *
+ *  @author Basileal Imana, Bemnet Demere and Maria Dyane
+ *  @version 1.0
+ *  @since 1/13/15.
  */
 public class HomePageFragment extends Fragment {
 
     final static String SNAP_ID = "com.genius.android.reciper";
 
+    // member variables
     private Button mNewRecipe;
     private Button mAllRecipes;
     private RecipeBook mTheBook;
@@ -44,19 +50,21 @@ public class HomePageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.start_page, container, false);
 
+        // initialize member variables
         mNewRecipe = (Button)v.findViewById(R.id.new_recipe_button);
         mAllRecipes = (Button)v.findViewById(R.id.all_recipes_button);
         mTheBook = RecipeBook.getTheRecipeBook(getActivity());
 
+        //open a new recipe page
         mNewRecipe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Create a new recipe
+                // create a new recipe
                 Recipe recipe = new Recipe();
                 recipe.setTitle("Recipe");
                 mTheBook.addRecipe(recipe);
 
-                // Add a dummy snap to the recipe for the 'Add snap' page
+                // add a dummy snap to the recipe for the 'Add snap' page
                 Snap snap = Recipe.newSnap(recipe.getID());
                 mTheBook.addSnap(snap);
                 Timer.getTimer(getActivity()).start();
@@ -65,6 +73,7 @@ public class HomePageFragment extends Fragment {
             }
         });
 
+        // open list of all past recipes
         mAllRecipes.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {

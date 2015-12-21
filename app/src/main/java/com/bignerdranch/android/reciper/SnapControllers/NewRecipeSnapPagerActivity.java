@@ -8,10 +8,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 
 import com.bignerdranch.android.reciper.R;
-import com.bignerdranch.android.reciper.Models.Recipe;
 import com.bignerdranch.android.reciper.RecipeBook;
 import com.bignerdranch.android.reciper.Models.Snap;
 
@@ -19,18 +17,24 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 /**
- * Created by bubujay on 11/14/15.
+ *  An activity class that hosts new SnapPager Fragment
+ *
+ *  @author Basileal Imana, Bemnet Demere and Maria Dyane
+ *  @version 1.0
+ *  @since 11/14/15.
  */
 public class NewRecipeSnapPagerActivity extends FragmentActivity {
-    private static final String EXTRA_RECIPE_ID =
-            "com.genius.android.reciper.snap_id";
+    private static final String EXTRA_RECIPE_ID = "com.genius.android.reciper.snap_id";
 
+    // member variables
     private ViewPager mViewPager;
     private UUID mRecipeID;
-    private Recipe mRecipe;
     private ArrayList<Snap> mRecipeSnaps;
     private RecipeAdapter mAdapter;
 
+    /**
+     * Returns a new intent which fires this activity
+     */
     public static Intent newIntent(Context packageContext, UUID recipeID){
         Intent intent = new Intent(packageContext, NewRecipeSnapPagerActivity.class);
         intent.putExtra(EXTRA_RECIPE_ID, recipeID);
@@ -42,39 +46,46 @@ public class NewRecipeSnapPagerActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_snap_pager);
 
+        // initialize member variables
         mViewPager = (ViewPager) findViewById(R.id.activity_snap_pager_view_pager);
-        mViewPager.setPageMargin(60);
-
         mRecipeID = (UUID) getIntent().getSerializableExtra(EXTRA_RECIPE_ID);
-        mRecipe = RecipeBook.getTheRecipeBook(this).getRecipe(mRecipeID);
         mRecipeSnaps = RecipeBook.getTheRecipeBook(this).getSnaps(mRecipeID);
 
-        Log.d("TAG  " , "Size:: "+ RecipeBook.getTheRecipeBook(getBaseContext()).getRecipes().size());
-        Log.d("TAG  " , "ID recived:: "+ mRecipeID);
-        Log.d("TAG", "Number of snaps: " + mRecipeSnaps.size());
+        // set margin between images
+        mViewPager.setPageMargin(60);
 
+        // create fragment manager
         FragmentManager fragmentManager = getSupportFragmentManager();
+
+        //set adapter to the viewPager
         mAdapter = new RecipeAdapter(fragmentManager);
         mViewPager.setAdapter(mAdapter);
     }
 
-    public void update(){
+    /**
+     * Update all fragments when data set changes
+     */
+    public void update() {
         mRecipeSnaps = RecipeBook.getTheRecipeBook(this).getSnaps(mRecipeID);
         mViewPager.getAdapter().notifyDataSetChanged();
     }
 
+    /**
+     * Adapter from ViewPager, creates new snapFragments
+     */
     public class RecipeAdapter extends FragmentStatePagerAdapter {
+
         public RecipeAdapter(FragmentManager fm) {
             super(fm);
         }
+
         @Override
         public Fragment getItem(int position) {
-            Log.d("I'm here", "" + position);
-            Log.d("I'm Here", "" + mRecipeSnaps.size());
 
             boolean isCamera = false;
+            // switch view from a page showing an image into a page showing a camera button
             if(position == mRecipeSnaps.size() - 1)
-                isCamera = !isCamera; //switch view from a page showing an image into a page showing a camera button
+                isCamera = !isCamera;
 
             return NewSnapFragment.newInstance(mRecipeSnaps.size() - 1 - position, mRecipeID, isCamera);
         }

@@ -25,6 +25,7 @@ public class RecipeInfoFormFragment extends Fragment {
     private static final String RECIPE_ID = "com.genius.android.reciper.RECIPE_ID";
     private static final String IS_NEW = "com.genius.android.reciper.IS_NEW";
 
+    //member variables
     private UUID mRecipeID;
     private Recipe mRecipe;
 
@@ -34,9 +35,11 @@ public class RecipeInfoFormFragment extends Fragment {
     private EditText mServings;
     private Spinner mSpinnerLevel;
     private EditText mTags;
-
     private boolean isNew;
 
+    /**
+     * Creates a new instance of this fragment
+     */
     public static RecipeInfoFormFragment newInstance(UUID RecipeID, boolean isNew) {
         Bundle args = new Bundle();
         args.putSerializable(RECIPE_ID, RecipeID);
@@ -49,6 +52,7 @@ public class RecipeInfoFormFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //initialize member variables
         isNew = (boolean) getArguments().getSerializable(IS_NEW);
         mRecipeID = (UUID)getArguments().getSerializable(RECIPE_ID);
         mRecipe = RecipeBook.getTheRecipeBook(getActivity()).getRecipe(mRecipeID);
@@ -56,6 +60,8 @@ public class RecipeInfoFormFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.recipe_info_fragment, container, false);
+
+        // get reference to UI views
         mSaveButton = (Button) v.findViewById(R.id.save_recipe_button);
         mTitle = (EditText) v.findViewById(R.id.title_edit_text);
         mSpinnerCategory = (Spinner) v.findViewById(R.id.spinner_category);
@@ -63,11 +69,13 @@ public class RecipeInfoFormFragment extends Fragment {
         mSpinnerLevel = (Spinner) v.findViewById(R.id.spinner_level);
         mTags = (EditText) v.findViewById(R.id.tags_edit_text);
 
+        // get different categories and difficulty level resources and save to an array
         String[] category_array = getResources().getStringArray(R.array.category_arrays);
         String[] level_array = getResources().getStringArray(R.array.difficulty_arrays);
         ArrayList<String> al = new ArrayList(Arrays.asList(category_array));
         ArrayList<String> al2 = new ArrayList(Arrays.asList(level_array));
 
+        //if not new, set content to values retrieved form databse
         if(!isNew) {
             mTitle.setText(mRecipe.getTitle());
             mSpinnerCategory.setSelection(al.indexOf(mRecipe.getCategory()));
@@ -76,22 +84,29 @@ public class RecipeInfoFormFragment extends Fragment {
             mSpinnerLevel.setSelection(al2.indexOf(mRecipe.getDifficulty()));
         }
 
+        //save all info to database and launch DetailRecipeActivity
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //if is new, stop timer here
                 if(isNew) {
                     Timer.getTimer(getActivity()).stop();
                     mRecipe.setDuration(Timer.getTimer(getActivity()).durationMinutes());
                     Timer.getTimer(getActivity()).reset();
                 }
+
+                //save all info to the recipe object instance
                 mRecipe.setTitle(mTitle.getText().toString());
                 mRecipe.setCategory(mSpinnerCategory.getSelectedItem().toString());
                 mRecipe.setServings(mServings.getText().toString());
                 mRecipe.setTags(mTags.getText().toString());
                 mRecipe.setDifficulty(mSpinnerLevel.getSelectedItem().toString());
 
+                //update database
                 RecipeBook.getTheRecipeBook(getActivity()).updateRecipe(mRecipe);
                 Intent intent = DetailRecipeActivity.newIntent(getActivity(), mRecipeID);
+
+                //launch activity
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 getActivity().finish();

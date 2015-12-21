@@ -1,33 +1,36 @@
 package com.bignerdranch.android.reciper;
 
 import android.content.Intent;
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
 
+/**
+ *  Splash page activity
+ *
+ *  @author Basileal Imana, Bemnet Demere and Maria Dyane
+ *  @version 1.0
+ *  @since 12/02/15.
+ */
 public class SplashActivity extends AppCompatActivity {
 
-    /** Duration of wait **/
-    private final int SPLASH_DISPLAY_LENGTH = 1000;
+    // duration of wait
+    private final int SPLASH_DURATION = 1000;
 
-    /** Called when the activity is first created. */
     @Override
-    public void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen);
 
-        /* New Handler to start the Menu-Activity
-         * and close this Splash-Screen after some seconds.*/
+        // handler starts the homepage and close the splash-screen after some seconds.
         new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {
-                /* Create an Intent that will start the Menu-Activity. */
+                // create intent to start homepage activity
                 Intent mainIntent = new Intent(SplashActivity.this,HomePageActivity.class);
                 SplashActivity.this.startActivity(mainIntent);
                 SplashActivity.this.finish();
             }
-        }, SPLASH_DISPLAY_LENGTH);
+        }, SPLASH_DURATION);
     }
 }

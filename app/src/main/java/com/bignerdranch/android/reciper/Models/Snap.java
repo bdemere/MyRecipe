@@ -1,77 +1,52 @@
 package com.bignerdranch.android.reciper.Models;
 
-import android.content.Context;
-import android.util.Log;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
 /**
- * Created by bubujay on 11/12/15.
+ *  A snap model
+ *
+ *  @author Basileal Imana, Bemnet Demere and Maria Dyane
+ *  @version 1.0
+ *  @since 11/12/15.
  */
-
 public class Snap {
-    private Context mContext;
-    private UUID mID;
-    private int mPicture;
-    private UUID mParentRecipeID;
-    private File mPhotoFile;
-    private String mPictureFileName;
-    private Date mDate;
 
+    // instance variables
+    private UUID mID;
+    private UUID mParentRecipeID;
+    private Date mDate;
     private ArrayList<Comment> mComments;
 
+    /**
+     * Default constructor
+     */
     public Snap(){
         this(UUID.randomUUID());
     }
 
+    /**
+     * Constructor with ID
+     * @param id
+     */
     public Snap(UUID id) {
         mID = id;
         mComments = new ArrayList<>();
         mDate = new Date();
     }
 
-    public void setmParentRecipeID (UUID parentId) {
+    // Getter and setter methods for instance variables
+    public void setParentRecipeID(UUID parentId) {
         mParentRecipeID = parentId;
     }
+
     public ArrayList<Comment> getComments() {
         return mComments;
     }
 
-    public static Comment newComment(UUID snapId){
-        Comment comment = new Comment();
-        comment.setParentSnapID(snapId);
-        return comment;
-    }
-
-    public Comment getLatestComment(){
-        return mComments.get(mComments.size() - 1);
-    }
-
-    public Comment searchComments(float x, float y){
-        int side = 260;
-        Log.d("TAG", "Number of comments: " + mComments.size());
-        for(Comment comment : mComments){
-            if((int)comment.getX() / side == (int)x / side
-                    && (int)comment.getY() / side == (int)y / side)
-                return comment;
-            /*Log.d("TAG", "Diff X: " + Math.abs((int)comment.getX() - (int)x));
-            Log.d("TAG", "Diff Y: " + Math.abs((int)comment.getY() - (int)y));
-            if((Math.abs((int)comment.getX() - (int)x) < side)
-                    && (Math.abs((int)comment.getY() - (int)y) < side))
-                return comment;*/
-        }
-        return null;
-    }
-
     public void setComments(ArrayList<Comment> commentsList) {
         mComments = commentsList;
-    }
-
-    public boolean hasComments(){
-        return !mComments.isEmpty();
     }
 
     public Date getDate() {
@@ -86,26 +61,46 @@ public class Snap {
         return mParentRecipeID;
     }
 
-
     public UUID getId() {
         return mID;
     }
 
-    public int getPicture() {
-        return mPicture;
+    /**
+     * Given xy coordinates, searches for comment in near proximity
+     * @param x x coordinate
+     * @param y y coordinate
+     * @return comment if found, null if not found
+     */
+    public Comment searchComments(float x, float y){
+        int side = 260;
+        for(Comment comment : mComments){
+            if((int)comment.getX() / side == (int)x / side
+                    && (int)comment.getY() / side == (int)y / side)
+                return comment;
+        }
+        return null;
     }
 
+    /**
+     * Get image file name based on snap and recipe ID
+     * @return snap's file name
+     */
     public String getPictureFileName(){
         String toReturn = "IMG_"
                 + mID.toString()
                 + "_" + mParentRecipeID.toString() + ".jpg";
         return toReturn;
     }
-    /*public File getPhotoFile() {
-        return mPhotoFile;
-    }*/
-    public void setPicture(int mPicture) {
-        this.mPicture = mPicture;
+
+    /**
+     * Static method for creating a new comment given a parent snap ID
+     * @param snapId parent snap ID
+     * @return new comment
+     */
+    public static Comment newComment(UUID snapId){
+        Comment comment = new Comment();
+        comment.setParentSnapID(snapId);
+        return comment;
     }
 
 }

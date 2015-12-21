@@ -1,15 +1,19 @@
 package com.bignerdranch.android.reciper.Models;
 
-import com.bignerdranch.android.reciper.R;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
 /**
- * Created by bubujay on 11/14/15.
+ *  A recipe model
+ *
+ *  @author Basileal Imana, Bemnet Demere and Maria Dyane
+ *  @version 1.0
+ *  @since 11/14/15.
  */
 public class Recipe {
+
+    // instance variables
     private String mRecipeTitle;
     private Date mDate;
     private UUID ID;
@@ -18,23 +22,34 @@ public class Recipe {
     private String mTags;
     private long mDuration;
     private String mDifficulty;
-    private ArrayList<Snap> mSnaps = new ArrayList<>();
+    private ArrayList<Snap> mSnaps;
+    private UUID mPrimarySnap;
 
+    /**
+     * Default constructor
+     */
     public Recipe(){
         this(UUID.randomUUID());
     }
 
+    /**
+     * Constructor with ID
+      * @param id
+     */
     public Recipe(UUID id) {
         ID = id;
-        Snap dummySnap = new Snap(ID);
+        mSnaps = new ArrayList<>();
+        Snap dummySnap = new Snap(ID); //create a dummy snap
         mSnaps.add(dummySnap);
         mDate = new Date();
         mCategory = "Other";
         mServings = "N/A";
         mTags = "N/A";
         mDifficulty = "Intermediate";
+        mPrimarySnap = dummySnap.getId(); //this feature is not functional as of now
     }
 
+    // Getter and setter methods for instance variables
     public void setDifficulty(String difficulty) {
         this.mDifficulty = difficulty;
     }
@@ -42,6 +57,7 @@ public class Recipe {
     public String getDifficulty() {
         return mDifficulty;
     }
+
     public String getCategory() {
         return mCategory;
     }
@@ -102,11 +118,22 @@ public class Recipe {
         return mSnaps.get(position).getId();
     }
 
+    public void setPrimarySnap(UUID snapId) {
+        mPrimarySnap = snapId;
+    }
+
+    public UUID getPrimarySnap() {
+        return mPrimarySnap;
+    }
+
+    /**
+     * Static method for creating a new snap given a parent recipe ID
+     * @param recipeID parent recipe ID
+     * @return new snap
+     */
     public static Snap newSnap(UUID recipeID){
         Snap newSnap = new Snap();
-        newSnap.setmParentRecipeID(recipeID);
-        //mSnaps.add(0,newSnap);
-        //newSnap.setPicture(R.drawable.burger); // temporary
+        newSnap.setParentRecipeID(recipeID);
         return newSnap;
     }
 }
